@@ -1,0 +1,20 @@
+http:
+  # Add the service
+  services:
+    traefik-service:
+      loadBalancer:
+        servers:
+        - url: http://127.0.0.1:8080
+    consul-service:
+      loadBalancer:
+        servers:
+        - url: http://127.0.0.1:8500
+    consul-agent-service:
+      loadBalancer:
+        servers:
+        - url: http://127.0.0.1:9500
+    nomad-service:
+      loadBalancer:
+        servers:
+        - url: http://10.49.0.6:4646
+    

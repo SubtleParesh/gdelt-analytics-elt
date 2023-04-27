@@ -1,0 +1,17 @@
+[Unit] 
+Description=traefik
+Documentation=https://doc.traefik.io/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/home/ubuntu/traefik/traefik
+KillMode=process
+KillSignal=SIGINT
+LimitNOFILE=65536
+LimitNPROC=infinity
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

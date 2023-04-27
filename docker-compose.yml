@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: gdelt-analytics-etl-clickhouse
+    ports:
+      - "38123:8123"
+      - "39000:9000"
+    volumes:
+      - ./.docker-data/clickhouse:/var/lib/clickhouse
+    environment:
+      - CLICKHOUSE_USER=clickhouse
+      - CLICKHOUSE_PASSWORD=clickhouse
+      - CLICKHOUSE_DATABASE=default
+
+  metabase:
+    image: metabase/metabase:v0.46.1
+    container_name: gdelt-analytics-etl-metabase
+    depends_on:
+      - clickhouse
+    ports:
+      - "38088:3000"
+    volumes:
+      - ./.docker-data/metabase-data-plugins:/plugins"
+  
+  minio:
+    image: minio/minio:latest
+    container_name: gdelt-analytics-etl-minio
+    
+    command: server --console-address ":9090"
+    ports:
+      - "39090:9090"
+      - "39191:9000"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin_password
+      - MINIO_VOLUMES=/mnt/data
+    volumes:
+      - ./.docker-data/minio:/mnt/data"

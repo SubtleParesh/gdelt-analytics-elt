@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+- name: gdelt
+  tables:
+  - name: events
+  - name: cameo_country
+  - name: cameo_eventcodes
+  - name: cameo_type
+# - name: gdelt_mentions

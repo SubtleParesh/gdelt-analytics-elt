@@ -1,0 +1,11 @@
+dbt_transformations:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      schema: gdelt
+      host: 127.0.0.1
+      port: 38123
+      user: clickhouse
+      password: 'clickhouse'
+      secure: False
