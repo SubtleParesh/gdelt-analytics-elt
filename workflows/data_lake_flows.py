@@ -11,7 +11,6 @@ from pprint import pprint
 import concurrent.futures
 from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
 import warnings
-import sql.create_cameo_dictionary as create_cameo_dictionary
 import sql.create_cameo_tables as create_cameo_tables
 from enum import Enum
 from minio import Minio
@@ -19,44 +18,23 @@ from io import BytesIO
 from common import *
 
 
-# prefect cloud login -k pnu_zDMQIudpS26KW2ZEFSdgZNVZ4wkJ3l24v0nY
 is_bucket_exists=False
 
 def get_minio_client():
     client = Minio(
-        "localhost:39191",
+        f"{ip_address}:39191",
         access_key="admin",
         secret_key="admin_password",
         secure=False
     )
     global is_bucket_exists
 
-    # if is_bucket_exists == None or is_bucket_exists == False:
-    #     is_bucket_exists=False
 
     # Make 'gdelt' bucket if not exist.
     if is_bucket_exists:
         found = client.bucket_exists("gdelt")
         if not found and is_bucket_exists:
             client.make_bucket("gdelt")
-            policy = {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Principal": {"AWS": "*"},
-                        "Action": ["s3:GetBucketLocation", "s3:ListBucket"],
-                        "Resource": "arn:aws:s3:::my-bucket",
-                    },
-                    {
-                        "Effect": "Allow",
-                        "Principal": {"AWS": "*"},
-                        "Action": "s3:GetObject",
-                        "Resource": "arn:aws:s3:::my-bucket/*",
-                    },
-                ],
-            }
-            client.set_bucket_policy("gdelt", json.dumps(policy))
             is_bucket_exists=True
         else:
             is_bucket_exists=True
@@ -119,7 +97,6 @@ def subflow_to_load_csv_to_datalake(csv_full_list, csv_extractor_function, trans
         extracted_df = extract_csv_batch(grouped_csv_list, executor, csv_extractor_function)
         transform_function(extracted_df)
         load_to_minio(df=extracted_df, path=table_name, filename=date)
-        # load_to_clickhouse(extracted_df, table_name)
 
 
 @task(
@@ -144,7 +121,6 @@ def extract_load_cameo_type():
     cameo_dtype = {"Code": "string", "Label": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df=df, path=cameo_type, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_type)
 
 
 def extract_load_cameo_religion():
@@ -153,7 +129,6 @@ def extract_load_cameo_religion():
     cameo_dtype = {"Code": "string", "Label": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df, path=cameo_religion, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_religion)
 
 
 def extract_load_cameo_knowngroup():
@@ -162,7 +137,6 @@ def extract_load_cameo_knowngroup():
     cameo_dtype = {"Code": "string", "Label": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df, path=cameo_knowngroup, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_knowngroup)
 
 
 def extract_load_cameo_goldsteinscale():
@@ -170,7 +144,6 @@ def extract_load_cameo_goldsteinscale():
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.goldsteinscale.txt"
     cameo_dtype = {"CameoEventCode": "string", "GoldsteinScale": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
-    # load_to_clickhouse.submit(df, gdelt_cameo_goldsteinscale)
     load_to_minio(df, path=cameo_goldsteinscale, filename="data")
 
 
@@ -180,7 +153,6 @@ def extract_load_cameo_eventcodes():
     cameo_dtype = {"CameoEventCode": "string", "EventDescription": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df, path=cameo_eventcodes, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_eventcodes)
 
 
 def extract_load_cameo_ethnic():
@@ -189,7 +161,6 @@ def extract_load_cameo_ethnic():
     cameo_dtype = {"Code": "string", "Label": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df, path=cameo_ethnic, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_ethnic)
 
 
 def extract_load_cameo_country():
@@ -198,7 +169,6 @@ def extract_load_cameo_country():
     cameo_dtype = {"Code": "string", "Label": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df, path=cameo_country, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_country)
 
 
 def extract_load_cameo_fipscountry():
@@ -207,7 +177,6 @@ def extract_load_cameo_fipscountry():
     cameo_dtype = {"Code": "string", "Label": "string"}
     df = pd.read_csv(url, sep="\t", skiprows=0, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
     load_to_minio(df, path=cameo_fipscountry, filename="data")
-    # load_to_clickhouse.submit(df, gdelt_cameo_fipscountry)
 
 
 @flow(name="Subflow - Extract And Load Cameo Tables")
@@ -220,52 +189,3 @@ def subflow_extract_load_cameo_tables():
     extract_load_cameo_ethnic()
     extract_load_cameo_country()
     extract_load_cameo_fipscountry()
-
-
-# @flow(name="Intialization Ingest Data")
-# def main_flow(master_csv_list_url, last_15mins_csv_list_url, min_datetime, clean_start=False, max_datetime=None):
-#     master_list = retrive_file_urls_from_csv(master_csv_list_url)
-#     # latest_list = retrive_file_urls_from_csv(last_15mins_csv_list_url)
-#     # master_list = pd.concat([master_list, latest_list])
-#     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
-#     if(max_datetime is not None):
-#         master_list = master_list[master_list["DateTime"].dt.date < max_datetime.date()]
-
-#     master_list_events = master_list[master_list["FileUrl"].str.contains("export")]
-#     master_list_mentions = master_list[master_list["FileUrl"].str.contains("mentions")]
-#     master_list_gkg = master_list[master_list["FileUrl"].str.contains("gkg")]
-
-#     logger = get_run_logger()
-#     log_master_list_info(master_list_events, master_list_mentions, master_list_gkg, logger)
-
-
-#     # subflow_extract_load_cameo_tables()
-#     # subflow_to_load_csv_to_db(master_list_events, extract_events, transform_events, gdelt_events_table_name)
-#     # subflow_to_load_csv_to_db(master_list_mentions, extract_mentions, transform_mentions, gdelt_mentions_table_name)
-
-
-
-
-
-# # @flow(name="Ingest Data at intervals")
-# # def main_flow_corn(master_csv_list, min_datetime):
-# #     latest_list = get_data_files(last_15mins_csv_list)
-# #     df = extract(latest_list)
-# #     df = transform(df)
-# #     path = write_local(df, "","")
-# #     load_to_minio(path)
-
-# if __name__ == "__main__":
-#     master_csv_list_url = "http://data.gdeltproject.org/gdeltv2/masterfilelist.txt"
-#     last_15mins_csv_list_url = "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
-#     min_datetime = datetime(2023, 4, 1)
-#     # max_datetime = datetime(2021, 4, 1)
-
-#     main_flow(
-#         master_csv_list_url=master_csv_list_url,
-#         last_15mins_csv_list_url=last_15mins_csv_list_url,
-#         min_datetime=min_datetime,
-#         clean_start = True
-#         # max_datetime=max_datetime,
-#     )
-

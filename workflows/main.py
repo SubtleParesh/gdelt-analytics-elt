@@ -10,7 +10,6 @@ import clickhouse_connect
 from pprint import pprint
 import concurrent.futures
 from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
-import sql.create_cameo_dictionary as create_cameo_dictionary
 import sql.create_cameo_tables as create_cameo_tables
 from common import *
 from data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions
@@ -69,22 +68,24 @@ def main_flow(master_csv_list_url, last_15mins_csv_list_url, min_datetime, clean
     log_master_list_info(master_list_events, master_list_mentions, master_list_gkg, logger)
     
     
-    #subflow_extract_load_cameo_tables()
-    #subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
-    #subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
+    subflow_extract_load_cameo_tables()
+    subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
+    subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
     subflow_datawarehouse(clean_start)
 
 
 if __name__ == "__main__":
     master_csv_list_url = "http://data.gdeltproject.org/gdeltv2/masterfilelist.txt"
     last_15mins_csv_list_url = "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
-    min_datetime = datetime(2023, 4, 1)
-    # max_datetime = datetime(2021, 4, 1)
+
+    # Change this value based upon your bandwidth and time. 
+    # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
+    min_datetime = datetime(2023, 1, 1)
+    max_datetime = datetime(2021, 4, 1)
 
     main_flow(
         master_csv_list_url=master_csv_list_url,
         last_15mins_csv_list_url=last_15mins_csv_list_url,
         min_datetime=min_datetime,
         clean_start = True
-        # max_datetime=max_datetime,
     )

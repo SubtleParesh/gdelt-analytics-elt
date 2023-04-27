@@ -6,6 +6,10 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 DataFileType = Enum("DatafileType", "Event Mentions GKG")
 
+# Change Ip Address in case of Using VM , Defaulted for docker based development
+# Do not use 127.0.0.1
+ip_address = "192.168.0.101"
+
 export_data_file_type_suffix = ".export.csv.zip"
 mentions_data_file_type_suffix = ".mentions.csv.zip"
 gkg_data_file_type_suffix = ".gkg.csv.zip"
