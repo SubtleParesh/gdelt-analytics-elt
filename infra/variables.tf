@@ -48,3 +48,12 @@ variable "environment" {
   type        = string
   default     = "../"
 }
+
+
+variable "azure_creds" {
+  type = object({
+    subscription_id = string
+    tenant_id = string
+  })
+  sensitive = true
+}

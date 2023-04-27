@@ -1,0 +1,90 @@
+from anyio import create_event
+import pandas as pd
+import datetime
+from pathlib import Path
+from datetime import timedelta, datetime
+from prefect import flow, task, get_run_logger
+from prefect.tasks import task_input_hash
+from prefect.blocks.system import Secret
+import clickhouse_connect
+from pprint import pprint
+import concurrent.futures
+from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
+import sql.create_cameo_dictionary as create_cameo_dictionary
+import sql.create_cameo_tables as create_cameo_tables
+from common import *
+from data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions
+from datawarehouse_flows import subflow_datawarehouse
+
+@task(log_prints=True, tags=["load"], retries=3, cache_result_in_memory=True, cache_key_fn=task_input_hash,cache_expiration=timedelta(minutes=60))
+def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
+    df = pd.read_csv(
+        list_file_url,
+        delimiter=" ",
+        dtype={"FileUrl": "string"},
+        names=["Size", "Id", "FileUrl"],
+    )
+    df["DateTimeTemporary"] = df["FileUrl"].str.extract(r"(\d{14})")
+    df["DateTime"] = pd.to_datetime(df["DateTimeTemporary"], format="%Y%m%d%H%M%S")
+    df["Date"] = df["DateTime"].dt.date
+    df["Size"] = pd.to_numeric(df["Size"], errors="coerce").fillna(0)
+    df = df.drop("DateTimeTemporary", axis=1)
+    print(df.head())
+    print(df.info())
+    return df
+
+def log_master_list_info(master_list_export, master_list_mentions, master_list_gkg, logger):
+    export_size_mb = master_list_export["Size"].sum() / (1024 * 1024)
+    mentions_size_mb = master_list_mentions["Size"].sum() / (1024 * 1024)
+    gkg_size_mb = master_list_gkg["Size"].sum() / (1024 * 1024)
+    
+    logger.info(f"Total size of export data in MB: {export_size_mb}")
+    logger.info(f"Total size of mentions data in MB: {mentions_size_mb}")
+    logger.info(f"Total size of GKG data in MB: {gkg_size_mb}")
+    
+    print(
+        f"Export Number of Rows {str(master_list_export.shape[0])}, Size of all data in rows {str(export_size_mb)}"
+    )
+    print(
+        f"Mentions - Number of Rows {str(master_list_mentions.shape[0])}, Size of all data in rows {str(mentions_size_mb)}"
+    )
+    print(
+        f"GKG - Number of Rows {str(master_list_gkg.shape[0])}, Size of all data in rows {str(gkg_size_mb)}"
+    )
+
+@flow(name="Intialization Ingest Data")
+def main_flow(master_csv_list_url, last_15mins_csv_list_url, min_datetime, clean_start=False, max_datetime=None):
+    master_list = retrive_file_urls_from_csv(master_csv_list_url)
+    latest_list = retrive_file_urls_from_csv(last_15mins_csv_list_url)
+    master_list = pd.concat([master_list, latest_list])
+    master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
+    if(max_datetime is not None):
+        master_list = master_list[master_list["DateTime"].dt.date < max_datetime.date()]
+    
+    master_list_events = master_list[master_list["FileUrl"].str.contains("export")]
+    master_list_mentions = master_list[master_list["FileUrl"].str.contains("mentions")]
+    master_list_gkg = master_list[master_list["FileUrl"].str.contains("gkg")]
+    
+    logger = get_run_logger()
+    log_master_list_info(master_list_events, master_list_mentions, master_list_gkg, logger)
+    
+    
+    #subflow_extract_load_cameo_tables()
+    #subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
+    #subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
+    subflow_datawarehouse(clean_start)
+
+
+if __name__ == "__main__":
+    master_csv_list_url = "http://data.gdeltproject.org/gdeltv2/masterfilelist.txt"
+    last_15mins_csv_list_url = "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
+    min_datetime = datetime(2023, 4, 1)
+    # max_datetime = datetime(2021, 4, 1)
+
+    main_flow(
+        master_csv_list_url=master_csv_list_url,
+        last_15mins_csv_list_url=last_15mins_csv_list_url,
+        min_datetime=min_datetime,
+        clean_start = True
+        # max_datetime=max_datetime,
+    )

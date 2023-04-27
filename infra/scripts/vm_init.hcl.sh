@@ -57,17 +57,14 @@ sudo mkdir /etc/consul.d
 sudo mkdir /etc/nomad.d
 sudo mkdir /etc/traefik
 
-
 sudo cp /home/ubuntu/cloudinit/consul.server.json /etc/consul.d.server/consul.json
 sudo cp /home/ubuntu/cloudinit/consul.agent.json /etc/consul.d/consul.json
 sudo cp /home/ubuntu/cloudinit/consul.service /etc/systemd/system/consul.service
 sudo cp /home/ubuntu/cloudinit/nomad.hcl /etc/nomad.d/nomad.hcl
 sudo cp /home/ubuntu/cloudinit/traefik.yml /etc/traefik/traefik.yml
-sudo cp /home/ubuntu/cloudinit/acme.json /etc/traefik/acme.json
 sudo cp /home/ubuntu/cloudinit/traefikConfig.yml /etc/traefik/traefikConfig.yml
 sudo cp /home/ubuntu/cloudinit/traefik.service /etc/systemd/system/traefik.service
 sudo cp /home/ubuntu/cloudinit/netplan_60-static.yaml /etc/netplan/60-static.yaml
-sudo cp /home/ubuntu/cloudinit/wg0.conf /etc/wireguard/wg0.conf
 sudo cp /home/ubuntu/cloudinit/daemon.json /etc/docker/daemon.json
 
 sudo chmod 600 /etc/traefik/acme.json
@@ -99,9 +96,6 @@ sudo chmod -R 640 /etc/nomad.d/*
 sudo systemctl enable nomad
 sudo systemctl start nomad
 
-cd /home/ubuntu/cloudinit/authelia
-sudo docker-compose up -d
-
 cd /home/ubuntu
 mkdir traefik
 cd traefik
@@ -112,5 +106,9 @@ mkdir /etc/traefik
 
 sudo systemctl enable traefik
 sudo systemctl start traefik
+
+
+cd /home/ubuntu
+sudo docker-compose up -d
 
 echo "Cloud Init Completed"
