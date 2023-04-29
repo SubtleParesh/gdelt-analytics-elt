@@ -12,7 +12,7 @@ import concurrent.futures
 from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
 import sql.create_cameo_tables as create_cameo_tables
 from common import *
-from data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions
+from data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions, create_bucket
 from datawarehouse_flows import subflow_datawarehouse
 
 @task(log_prints=True, tags=["load"], retries=3, cache_result_in_memory=True, cache_key_fn=task_input_hash,cache_expiration=timedelta(minutes=60))
@@ -66,9 +66,9 @@ def main_flow(master_csv_list_url, last_15mins_csv_list_url, min_datetime, clean
     
     logger = get_run_logger()
     log_master_list_info(master_list_events, master_list_mentions, master_list_gkg, logger)
+    create_bucket()
     
-    
-    subflow_extract_load_cameo_tables()
+    # subflow_extract_load_cameo_tables()
     subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
     subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
     subflow_datawarehouse(clean_start)
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     # Change this value based upon your bandwidth and time. 
     # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
-    min_datetime = datetime(2023, 1, 1)
+    min_datetime = datetime(2022, 1, 1)
     max_datetime = datetime(2021, 4, 1)
 
     main_flow(

@@ -66,168 +66,107 @@ resource "azurerm_network_security_group" "lighthouse" {
   location            = azurerm_resource_group.lighthouse.location
   resource_group_name = azurerm_resource_group.lighthouse.name
 
-  # For any issues, to temporarily enable ssh access
+  # This port is enabled for file provisioning initially, needs to be restricted later
+  # can be updated to only allow run machine ip address using tf functions
+  security_rule {
+    name                       = "ssh"
+    priority                   = 300
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
   # security_rule {
-  #   name                       = "ssh"
-  #   priority                   = 300
+  #   name                       = "http"
+  #   priority                   = 310
   #   direction                  = "Inbound"
   #   access                     = "Allow"
   #   protocol                   = "Tcp"
   #   source_port_range          = "*"
-  #   destination_port_range     = "22"
+  #   destination_port_range     = "80"
   #   source_address_prefix      = "*"
   #   destination_address_prefix = "*"
   # }
 
-  security_rule {
-    name                       = "http"
-    priority                   = 310
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "https"
-    priority                   = 320
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "443"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+  # security_rule {
+  #   name                       = "https"
+  #   priority                   = 320
+  #   direction                  = "Inbound"
+  #   access                     = "Allow"
+  #   protocol                   = "Tcp"
+  #   source_port_range          = "*"
+  #   destination_port_range     = "443"
+  #   source_address_prefix      = "*"
+  #   destination_address_prefix = "*"
+  # }
 
 
-  security_rule {
-    name                       = "nomad"
-    priority                   = 350
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "4646"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+  # security_rule {
+  #   name                       = "nomad"
+  #   priority                   = 350
+  #   direction                  = "Inbound"
+  #   access                     = "Allow"
+  #   protocol                   = "*"
+  #   source_port_range          = "*"
+  #   destination_port_range     = "4646"
+  #   source_address_prefix      = "*"
+  #   destination_address_prefix = "*"
+  # }
 
-  security_rule {
-    name                       = "traefik_http_web"
-    priority                   = 360
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "8080"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+  # security_rule {
+  #   name                       = "traefik_http_web"
+  #   priority                   = 360
+  #   direction                  = "Inbound"
+  #   access                     = "Allow"
+  #   protocol                   = "*"
+  #   source_port_range          = "*"
+  #   destination_port_range     = "8080"
+  #   source_address_prefix      = "*"
+  #   destination_address_prefix = "*"
+  # }
 
-  security_rule {
-    name                       = "consul"
-    priority                   = 380
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "8500"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-
-  security_rule {
-    name                       = "nomad_rpc"
-    priority                   = 410
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "4647"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "nomad_serf"
-    priority                   = 420
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "4648"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-   security_rule {
-    name                       = "clickhouse"
-    priority                   = 420
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "38123"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "clickhouse_2"
-    priority                   = 420
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "39000"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+  # security_rule {
+  #   name                       = "consul"
+  #   priority                   = 380
+  #   direction                  = "Inbound"
+  #   access                     = "Allow"
+  #   protocol                   = "*"
+  #   source_port_range          = "*"
+  #   destination_port_range     = "8500"
+  #   source_address_prefix      = "*"
+  #   destination_address_prefix = "*"
+  # }
 
 
- security_rule {
-    name                       = "metabase"
-    priority                   = 420
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "38088"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+  # security_rule {
+  #   name                       = "nomad_rpc"
+  #   priority                   = 410
+  #   direction                  = "Inbound"
+  #   access                     = "Allow"
+  #   protocol                   = "*"
+  #   source_port_range          = "*"
+  #   destination_port_range     = "4647"
+  #   source_address_prefix      = "*"
+  #   destination_address_prefix = "*"
+  # }
 
-
- security_rule {
-    name                       = "minio"
-    priority                   = 420
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "39090"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+  # security_rule {
+  #   name                       = "nomad_serf"
+  #   priority                   = 420
+  #   direction                  = "Inbound"
+  #   access                     = "Allow"
+  #   protocol                   = "*"
+  #   source_port_range          = "*"
+  #   destination_port_range     = "4648"
+  #   source_address_prefix      = "*"
+  #   destination_address_prefix = "*"
+  # }
 
   
- security_rule {
-    name                       = "minio_2"
-    priority                   = 420
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "39191"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
 
   security_rule {
     name                       = "ping"
@@ -334,17 +273,5 @@ resource "azurerm_linux_virtual_machine" "lighthouse" {
       server_ip = azurerm_public_ip.lighthouse.ip_address
     })
     destination = "/home/${var.instance_root_username}/cloudinit/netplan_60-static.yaml"
-  }
-
-  provisioner "file" {
-    content = templatefile("${path.module}/../../docker-compose.yml", {
-      server_ip = azurerm_public_ip.lighthouse.ip_address
-    })
-    destination = "/home/${var.instance_root_username}/docker-compose.yaml"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../.docker-data"
-    destination = "/home/${var.instance_root_username}/"
   }
 }

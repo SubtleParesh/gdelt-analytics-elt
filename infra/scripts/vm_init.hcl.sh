@@ -108,7 +108,4 @@ sudo systemctl enable traefik
 sudo systemctl start traefik
 
 
-cd /home/ubuntu
-sudo docker-compose up -d
-
 echo "Cloud Init Completed"

@@ -13,6 +13,7 @@
 - ![Event Summary Based Upon Actor Countries](./data_visualization/Events%20Summary%20Based%20Upon%20Country%20-%20Count%2C%20Map%20.png)
 -  ![Show Occurances of Events based upon Location](./data_visualization/Show%20Occurances%20of%20Events%20based%20upon%20Location.png)
 -  Other Dashboard Artifacts are available in data_visualization
+
 # Running Locally
 ## Must have tools
 - Docker
