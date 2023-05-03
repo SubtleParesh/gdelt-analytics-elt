@@ -1,4 +1,3 @@
-from anyio import create_event
 import pandas as pd
 import datetime
 from pathlib import Path
