@@ -16,7 +16,7 @@ from io import BytesIO
 from workflows.common import *
 from prefect_dask.task_runners import DaskTaskRunner
 from prefect.task_runners import ConcurrentTaskRunner
-
+import dask.dataframe as dd
 
 
 def create_bucket():
@@ -66,12 +66,11 @@ def transform_mentions(df):
 #         print(f"Error on read_csv {url} error {str(e)}")
 #         return None
 
-'An error occurred while calling the read_csv method registered to the pandas backend.\nOriginal Message: HTTPFileSystem requires "requests" and "aiohttp" to be installed'
 
 
 def extract_events(urls):
     try:
-        df = dd.read_csv(urls, sep="\t", names=list(dtypes_events.keys()),error_bad_lines=False, dtype = dtypes_events)
+        df = dd.read_csv(urls, sep="\t", names=list(dtypes_events.keys()), error_bad_lines=False, dtype = dtypes_events)
         return df.compute()
     except Exception as e:
         print(f"Error on read_csv error {str(e)}")
@@ -79,7 +78,7 @@ def extract_events(urls):
 
 def extract_mentions(urls):
     try:
-        df = dd.read_csv(urls, sep="\t", names=list(dtypes_mentions.keys()),error_bad_lines=False, dtype = dtypes_mentions)
+        df = dd.read_csv(urls, sep="\t", names=list(dtypes_mentions.keys()), error_bad_lines=False, dtype = dtypes_mentions)
         return df.compute()
     except Exception as e:
         print(f"Error on read_csv  error {str(e)}")
