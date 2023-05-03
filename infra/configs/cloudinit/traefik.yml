@@ -36,8 +36,8 @@ api:
   dashboard: true
   debug: false
 
-tracing:
-  jaeger: {}
+#tracing:
+  #jaeger: {}
 
 certificatesResolvers:
   letsencrypt:
