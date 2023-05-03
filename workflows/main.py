@@ -51,8 +51,8 @@ def log_master_list_info(master_list_export, master_list_mentions, master_list_g
     )
 
 @flow(name="Intialization Ingest Data")
-def main_flow(master_csv_list_url, min_datetime_string:str, clean_start=False, max_datetime=None):
-    min_datetime = datetime.strptime(min_datetime_string,"%d/%m/%Y")
+def main_flow(master_csv_list_url, min_date:str, clean_start=False, max_datetime=None):
+    min_datetime = datetime.strptime(min_date,"%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
     if(max_datetime is not None):
@@ -78,10 +78,10 @@ if __name__ == "__main__":
 
     # Change this value based upon your bandwidth and time. 
     # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
-    min_datetime = "1/05/2023"
+    min_date = "1/05/2023"
 
     main_flow(
         master_csv_list_url=master_csv_list_url,
-        min_datetime_string=min_datetime,
+        min_date=min_date,
         clean_start = True
     )
