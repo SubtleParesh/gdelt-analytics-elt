@@ -16,7 +16,7 @@ if __name__ == "__main__":
         flow=main_flow,
         version="1.0.0",
         storage=github_storage,
-        entrypoint="workflows/main.py:main_flow",
+        entrypoint="main.py:main_flow",
         parameters= {
             "master_csv_list_url":"http://data.gdeltproject.org/gdeltv2/lastupdate.txt",
             "min_date": "1/04/2023",
