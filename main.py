@@ -13,6 +13,7 @@ import workflows.sql.create_cameo_tables as create_cameo_tables
 from workflows.data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions, create_bucket
 from workflows.datawarehouse_flows import subflow_datawarehouse
 from workflows.gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
+from workflows.dbt_flow import trigger_dbt_flow
 
 @task(log_prints=True, tags=["load"], retries=3, cache_result_in_memory=True, cache_key_fn=task_input_hash,cache_expiration=timedelta(minutes=60))
 def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
@@ -66,10 +67,11 @@ def main_flow(master_csv_list_url, min_date:str, clean_start=False, max_datetime
     log_master_list_info(master_list_events, master_list_mentions, master_list_gkg, logger)
     create_bucket()
     
-    # subflow_extract_load_cameo_tables()
+    subflow_extract_load_cameo_tables()
     subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
     subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
     subflow_datawarehouse(clean_start)
+    trigger_dbt_flow()
 
 
 if __name__ == "__main__":
