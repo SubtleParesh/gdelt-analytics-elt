@@ -15,7 +15,7 @@ from workflows.datawarehouse_flows import subflow_datawarehouse
 from workflows.gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
 from workflows.dbt_flow import trigger_dbt_flow
 
-@task(log_prints=True, tags=["load"], retries=3, cache_result_in_memory=True, cache_key_fn=task_input_hash,cache_expiration=timedelta(minutes=60))
+@task(log_prints=True, tags=["load"], retries=3)
 def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
     df = pd.read_csv(
         list_file_url,
