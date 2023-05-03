@@ -8,11 +8,11 @@ from prefect.blocks.system import Secret
 import clickhouse_connect
 from pprint import pprint
 import concurrent.futures
-from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
-from common import *
-import sql.create_cameo_tables as create_cameo_tables
-from data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions, create_bucket
-from datawarehouse_flows import subflow_datawarehouse
+from workflows.common import *
+import workflows.sql.create_cameo_tables as create_cameo_tables
+from workflows.data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions, create_bucket
+from workflows.datawarehouse_flows import subflow_datawarehouse
+from workflows.gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
 
 @task(log_prints=True, tags=["load"], retries=3, cache_result_in_memory=True, cache_key_fn=task_input_hash,cache_expiration=timedelta(minutes=60))
 def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:

@@ -8,13 +8,12 @@ from prefect.blocks.system import Secret
 import clickhouse_connect
 from pprint import pprint
 import concurrent.futures
-from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
+from workflows.gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
 import warnings
-import sql.create_cameo_tables as create_cameo_tables
 from enum import Enum
 from minio import Minio
 from io import BytesIO
-from common import *
+from workflows.common import *
 from prefect_dask.task_runners import DaskTaskRunner
 from prefect.task_runners import ConcurrentTaskRunner
 
