@@ -41,6 +41,7 @@ resource "azurerm_public_ip" "lighthouse" {
   resource_group_name = azurerm_resource_group.lighthouse.name
   location            = azurerm_resource_group.lighthouse.location
   allocation_method   = "Static"
+  domain_name_label = "gdelt-analytics"
 
   tags = {
     environment = "Production"
@@ -80,93 +81,77 @@ resource "azurerm_network_security_group" "lighthouse" {
     destination_address_prefix = "*"
   }
 
-  # security_rule {
-  #   name                       = "http"
-  #   priority                   = 310
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "Tcp"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "80"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
+  security_rule {
+    name                       = "http"
+    priority                   = 310
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
-  # security_rule {
-  #   name                       = "https"
-  #   priority                   = 320
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "Tcp"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "443"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
+  security_rule {
+    name                       = "nomad"
+    priority                   = 350
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "4646"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
+  security_rule {
+    name                       = "traefik_http_web"
+    priority                   = 360
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "8080"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
-  # security_rule {
-  #   name                       = "nomad"
-  #   priority                   = 350
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "*"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "4646"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
+  security_rule {
+    name                       = "consul"
+    priority                   = 380
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "8500"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
-  # security_rule {
-  #   name                       = "traefik_http_web"
-  #   priority                   = 360
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "*"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "8080"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
+  security_rule {
+    name                       = "minio"
+    priority                   = 390
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "39090"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
-  # security_rule {
-  #   name                       = "consul"
-  #   priority                   = 380
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "*"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "8500"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
-
-
-  # security_rule {
-  #   name                       = "nomad_rpc"
-  #   priority                   = 410
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "*"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "4647"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
-
-  # security_rule {
-  #   name                       = "nomad_serf"
-  #   priority                   = 420
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "*"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "4648"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
-
-  
+  security_rule {
+    name                       = "prefect"
+    priority                   = 400
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "4200"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
   security_rule {
     name                       = "ping"
@@ -241,6 +226,11 @@ resource "azurerm_linux_virtual_machine" "lighthouse" {
     source      = "${path.module}/configs/cloudinit"
     destination = "/home/${var.instance_root_username}/"
   }
+
+  provisioner "file" {
+      source      = "${path.module}/nomad_jobs"
+      destination = "/home/${var.instance_root_username}/"
+    }
 
   
   provisioner "file" {
