@@ -1,4 +1,3 @@
-from anyio import create_event
 import pandas as pd
 import datetime
 from pathlib import Path
@@ -10,8 +9,8 @@ import clickhouse_connect
 from pprint import pprint
 import concurrent.futures
 from gdelt_data_type import dtypes_events, dtypes_mentions, dtypes_gkg
-import sql.create_cameo_tables as create_cameo_tables
 from common import *
+import sql.create_cameo_tables as create_cameo_tables
 from data_lake_flows import subflow_extract_load_cameo_tables, subflow_to_load_csv_to_datalake, extract_events, extract_mentions, transform_events, transform_mentions, create_bucket
 from datawarehouse_flows import subflow_datawarehouse
 
@@ -52,10 +51,9 @@ def log_master_list_info(master_list_export, master_list_mentions, master_list_g
     )
 
 @flow(name="Intialization Ingest Data")
-def main_flow(master_csv_list_url, last_15mins_csv_list_url, min_datetime, clean_start=False, max_datetime=None):
+def main_flow(master_csv_list_url, min_datetime_string:str, clean_start=False, max_datetime=None):
+    min_datetime = datetime.strptime(min_datetime_string,"%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
-    latest_list = retrive_file_urls_from_csv(last_15mins_csv_list_url)
-    master_list = pd.concat([master_list, latest_list])
     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
     if(max_datetime is not None):
         master_list = master_list[master_list["DateTime"].dt.date < max_datetime.date()]
@@ -80,12 +78,10 @@ if __name__ == "__main__":
 
     # Change this value based upon your bandwidth and time. 
     # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
-    min_datetime = datetime(2022, 1, 1)
-    max_datetime = datetime(2021, 4, 1)
+    min_datetime = "1/05/2023"
 
     main_flow(
         master_csv_list_url=master_csv_list_url,
-        last_15mins_csv_list_url=last_15mins_csv_list_url,
-        min_datetime=min_datetime,
+        min_datetime_string=min_datetime,
         clean_start = True
     )
