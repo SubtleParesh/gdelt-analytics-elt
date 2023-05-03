@@ -1,0 +1,4 @@
+.docker-data/*
+data_visualization/*
+infra/*
+*pyc
