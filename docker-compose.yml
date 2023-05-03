@@ -20,15 +20,16 @@ services:
   # --------------------------------------#
   #               Metabase                #
   # --------------------------------------#
-  # metabase:
-  #   image: metabase/metabase:v0.46.1
-  #   container_name: gdelt-analytics-etl-metabase
-  #   depends_on:
-  #     - clickhouse
-  #   ports:
-  #     - "38088:3000"
-  #   volumes:
-  #     - ./.docker-data/metabase-data-plugins:/plugins"
+  metabase:
+    image: metabase/metabase:v0.46.1
+    container_name: gdelt-analytics-etl-metabase
+    depends_on:
+      - clickhouse
+    ports:
+      - "18088:3000"
+    volumes:
+      - ./.docker-data/metabase-data-plugins:/plugins"
+    
     
   # --------------------------------------#
   #               Minio                   #
@@ -87,7 +88,7 @@ services:
     ports:
       - 4200:4200
     depends_on:
-      postgres:
+       postgres:
         condition: service_started
     volumes:
       - ./.docker-data/volumes/prefect:/root/.prefect
@@ -103,25 +104,25 @@ services:
   # --------------------------------------#
   #             Docker Agent              #
   # --------------------------------------#
-  # prefect-agent:
-  #   image: prefecthq/prefect
-  #   command:
-  #     - prefect
-  #     - agent
-  #     - start
-  #     - -q
-  #     - default
-  #   depends_on:
-  #     prefect-server:
-  #       condition: service_started
-  #   environment:
-  #     PREFECT_API_URL: http://prefect-server:4200/api
-  #     PREFECT_LOGGING_LEVEL: DEBUG
-  #     DOCKER_HOST: unix://var/run/docker.sock
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   networks:
-  #     - prefect
+  prefect-agent:
+    image: prefecthq/prefect:2-python3.10
+    command:
+      - prefect
+      - agent
+      - start
+      - -q
+      - default
+    depends_on:
+      prefect-server:
+        condition: service_started
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+      PREFECT_LOGGING_LEVEL: DEBUG
+      DOCKER_HOST: unix://var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - prefect
 
 networks:
   prefect:
