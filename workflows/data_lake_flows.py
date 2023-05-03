@@ -70,7 +70,7 @@ def transform_mentions(df):
 
 def extract_events(urls):
     try:
-        df = dd.read_csv(urls, sep="\t", names=list(dtypes_events.keys()), error_bad_lines=False, dtype = dtypes_events)
+        df = dd.read_csv(urls, sep="\t", names=list(dtypes_events.keys()), dtype = dtypes_events)
         return df.compute()
     except Exception as e:
         print(f"Error on read_csv error {str(e)}")
@@ -78,7 +78,7 @@ def extract_events(urls):
 
 def extract_mentions(urls):
     try:
-        df = dd.read_csv(urls, sep="\t", names=list(dtypes_mentions.keys()), error_bad_lines=False, dtype = dtypes_mentions)
+        df = dd.read_csv(urls, sep="\t", names=list(dtypes_mentions.keys()), dtype = dtypes_mentions)
         return df.compute()
     except Exception as e:
         print(f"Error on read_csv  error {str(e)}")
@@ -161,7 +161,7 @@ def extract_load_cameo_type():
     print(f"Extracting and Loading Data for {cameo_type}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.type.txt"
     cameo_dtype = {"Code": "string", "Label": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df=df, path=cameo_type, filename="data")
 
 @task
@@ -169,7 +169,7 @@ def extract_load_cameo_religion():
     print(f"Extracting and Loading Data for {cameo_religion}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.religion.txt"
     cameo_dtype = {"Code": "string", "Label": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_religion, filename="data")
 
 @task
@@ -177,7 +177,7 @@ def extract_load_cameo_knowngroup():
     print(f"Extracting and Loading Data for {cameo_knowngroup}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.knowngroup.txt"
     cameo_dtype = {"Code": "string", "Label": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_knowngroup, filename="data")
 
 @task
@@ -185,7 +185,7 @@ def extract_load_cameo_goldsteinscale():
     print(f"Extracting and Loading Data for {cameo_goldsteinscale}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.goldsteinscale.txt"
     cameo_dtype = {"CameoEventCode": "string", "GoldsteinScale": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_goldsteinscale, filename="data")
 
 @task
@@ -193,7 +193,7 @@ def extract_load_cameo_eventcodes():
     print(f"Extracting and Loading Data for {cameo_eventcodes}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.eventcodes.txt"
     cameo_dtype = {"CameoEventCode": "string", "EventDescription": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_eventcodes, filename="data")
 
 @task
@@ -201,7 +201,7 @@ def extract_load_cameo_ethnic():
     print(f"Extracting and Loading Data for {cameo_ethnic}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.ethnic.txt"
     cameo_dtype = {"Code": "string", "Label": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_ethnic, filename="data")
 
 @task
@@ -209,7 +209,7 @@ def extract_load_cameo_country():
     print(f"Extracting and Loading Data for {cameo_country}")
     url = "https://www.gdeltproject.org/data/lookups/CAMEO.country.txt"
     cameo_dtype = {"Code": "string", "Label": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=1, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_country, filename="data")
 
 @task
@@ -217,7 +217,7 @@ def extract_load_cameo_fipscountry():
     print(f"Extracting and Loading Data for {cameo_fipscountry}")
     url = "https://www.gdeltproject.org/data/lookups/FIPS.country.txt"
     cameo_dtype = {"Code": "string", "Label": "string"}
-    df = pd.read_csv(url, sep="\t", skiprows=0, names=list(cameo_dtype.keys()),error_bad_lines=False, dtype=cameo_dtype)
+    df = pd.read_csv(url, sep="\t", skiprows=0, names=list(cameo_dtype.keys()), dtype=cameo_dtype)
     load_to_minio(df, path=cameo_fipscountry, filename="data")
 
 
