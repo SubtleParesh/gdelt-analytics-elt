@@ -116,7 +116,7 @@ def load_to_clickhouse(df: pd.DataFrame, table_name: str):
     clickhouse_client.insert_df(table_name, df)
 
 
-@flow(name="Perform Datawarehouse Actions")
+@flow(name="GDELT ELT - Datawarehouse Sub Workflow")
 def subflow_datawarehouse(clean_start=False):
     if(clean_start):
         drop_tables()

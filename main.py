@@ -51,7 +51,7 @@ def log_master_list_info(master_list_export, master_list_mentions, master_list_g
         f"GKG - Number of Rows {str(master_list_gkg.shape[0])}, Size of all data in rows {str(gkg_size_mb)}"
     )
 
-@flow(name="Intialization Ingest Data")
+@flow(name="GDELT ELT Main Pipeline")
 def main_flow(master_csv_list_url, min_date:str, clean_start=False, max_datetime=None):
     min_datetime = datetime.strptime(min_date,"%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
@@ -67,10 +67,10 @@ def main_flow(master_csv_list_url, min_date:str, clean_start=False, max_datetime
     log_master_list_info(master_list_events, master_list_mentions, master_list_gkg, logger)
     create_bucket()
     
-    # subflow_extract_load_cameo_tables()
-    # subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
-    # subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
-    # subflow_datawarehouse(clean_start)
+    subflow_extract_load_cameo_tables()
+    subflow_to_load_csv_to_datalake(master_list_events, extract_events, transform_events, events_table_name)
+    subflow_to_load_csv_to_datalake(master_list_mentions, extract_mentions, transform_mentions, mentions_table_name)
+    subflow_datawarehouse(clean_start)
     trigger_dbt_flow()
 
 

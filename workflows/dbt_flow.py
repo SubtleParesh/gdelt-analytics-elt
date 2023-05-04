@@ -1,7 +1,7 @@
 from prefect import flow
 from prefect_dbt.cli.commands import DbtCoreOperation
 
-@flow
+@flow(name="GDELT ELT - DBT Tranformation Sub Workflow")
 def trigger_dbt_flow():
     result = DbtCoreOperation(
         commands=["ls &&", "dbt debug", "dbt run"],

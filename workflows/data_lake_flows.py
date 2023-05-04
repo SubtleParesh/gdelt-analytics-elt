@@ -50,23 +50,6 @@ def transform_mentions(df):
     df["EventTimeDate"] = pd.to_datetime(df["EventTimeDate"], format="%Y%m%d%H%M%S")
     df["MentionTimeDate"] = pd.to_datetime(df["MentionTimeDate"], format="%Y%m%d%H%M%S")
 
-# def extract_events(url):
-#     try:
-#         df = pd.read_csv(url, sep="\t", names=list(dtypes_events.keys()),error_bad_lines=False, dtype = dtypes_events)
-#         return df
-#     except Exception as e:
-#         print(f"Error on read_csv {url} error {str(e)}")
-#         return None
-
-# def extract_mentions(url):
-#     try:
-#         df = pd.read_csv(url, sep="\t", names=list(dtypes_mentions.keys()),error_bad_lines=False, dtype = dtypes_mentions)
-#         return df
-#     except Exception as e:
-#         print(f"Error on read_csv {url} error {str(e)}")
-#         return None
-
-
 
 def extract_events(urls):
     try:
@@ -84,23 +67,6 @@ def extract_mentions(urls):
         print(f"Error on read_csv  error {str(e)}")
         return None
 
-# def extract_csv_batch(grouped_csv_list, executor, csv_extractor_function):
-#     futures = []
-#     for idx, url_row in grouped_csv_list.iterrows():
-#         future = executor.submit(csv_extractor_function, url_row["FileUrl"])
-#         futures.append(future)
-
-#     # Use as_completed() method of futures to get results as they complete
-#     list_df_for_day = []
-#     for future in concurrent.futures.as_completed(futures):
-#         result = future.result()
-#         if result is not None:
-#             list_df_for_day.append(result)
-#     df_all_csv_for_day = list_df_for_day[0]
-#     for i in list_df_for_day[1:]:
-#         df_all_csv_for_day.append(i)
-
-#     return df_all_csv_for_day
 
 def extract_csv_batch(grouped_csv_list, csv_extractor_function):
     urls = []
@@ -110,35 +76,15 @@ def extract_csv_batch(grouped_csv_list, csv_extractor_function):
     return csv_extractor_function(urls)
 
 
-# @flow(name="Subflow - Extract And Load CSV Raw Files")
-# def subflow_to_load_csv_to_datalake(csv_full_list, csv_extractor_function, transform_function, table_name):
-#     print(f"Extracting and Loading all CSV files For {table_name}")
-#     executor = concurrent.futures.ThreadPoolExecutor(max_workers=40)
-#     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
-
-#     for date,grouped_csv_list in csv_list_grouped_by_date:
-#         print(f"Downloading CSV's for Date-{date} No of Rows {len(grouped_csv_list)} For {table_name}")
-#         extracted_df = extract_csv_batch(grouped_csv_list, executor, csv_extractor_function)
-#         transform_function(extracted_df)
-#         load_to_minio(df=extracted_df, path=table_name, filename=date)
-
-
 @task(retries=2, retry_delay_seconds=1)
 def load_csvs_by_data_to_minio(date, grouped_csv_list, table_name, csv_extractor_function, transform_function):
-    # print(f"Downloading CSV's for Date-{date} No of Rows {len(grouped_csv_list)} For {table_name}")
     extracted_df = extract_csv_batch(grouped_csv_list, csv_extractor_function)
     if extracted_df is not None:
         transform_function(extracted_df)
-        # ddf = dd.from_pandas(extracted_df, chunksize=1024*1024*1024)
-        #ddf.to_parquet(f's3://{get_bucket_file_path(path=table_name, filename=date)}', compression='gzip', ignore_divisions=True)
-        #                 #  , storage_options={'use_ssl': False})
         load_to_minio(df=extracted_df, path=table_name, filename=date)
 
 
 
-# @task(
-#     log_prints=True, tags=["load", "clickhouse"], retries=1
-# )
 def load_to_minio(df: pd.DataFrame, path: str, filename: str):
     minio_client = get_minio_client()
     df_parquet_data_buffer = BytesIO()
@@ -233,7 +179,7 @@ def subflow_extract_load_cameo_tables():
     extract_load_cameo_fipscountry.submit()
 
 # 4gb Memory Usage - workers-6 - th-2 
-@flow(name="Subflow - Extract And Load CSV Raw Files", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 10, "threads_per_worker": 2, "memory_limit": "1.3GiB", "processes": True}))
+@flow(name="GDELT ELT - Extract and Load Data Lake Sub Workflow", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 10, "threads_per_worker": 2, "memory_limit": "1.3GiB", "processes": True}))
 def subflow_to_load_csv_to_datalake(csv_full_list, csv_extractor_function, transform_function, table_name):
     print(f"Extracting and Loading all CSV files For {table_name}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
