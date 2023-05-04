@@ -8,8 +8,7 @@ DataFileType = Enum("DatafileType", "Event Mentions GKG")
 
 # Change Ip Address in case of Using VM , Defaulted for docker based development
 # Do not use 127.0.0.1, mostly it be 192.*.*.* on your local machine
-ip_address = "10.49.0.2"
-# ip_address = "gdelt-analytics.centralindia.cloudapp.azure.com"
+ip_address = "20.204.13.134"
 
 export_data_file_type_suffix = ".export.csv.zip"
 mentions_data_file_type_suffix = ".mentions.csv.zip"
