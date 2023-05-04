@@ -142,6 +142,19 @@ resource "azurerm_network_security_group" "lighthouse" {
   }
 
   security_rule {
+    name                       = "clickhouse"
+    priority                   = 395
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "38123"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+
+  security_rule {
     name                       = "prefect"
     priority                   = 400
     direction                  = "Inbound"
