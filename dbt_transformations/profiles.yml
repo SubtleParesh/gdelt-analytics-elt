@@ -4,7 +4,8 @@ dbt_transformations:
     dev:
       type: clickhouse
       schema: gdelt
-      host: 127.0.0.1
+      # Needs to be updated
+      host: 10.49.0.2
       port: 38123
       user: clickhouse
       password: 'clickhouse'
