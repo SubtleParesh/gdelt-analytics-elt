@@ -167,19 +167,19 @@ def extract_load_cameo_fipscountry():
     load_to_minio(df, path=cameo_fipscountry, filename="data")
 
 
-@flow(name="Subflow - Extract And Load Cameo Tables", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 3, "threads_per_worker": 2, "memory_limit": "1GiB", "processes": True}))
+@flow(name="Subflow - Extract And Load Cameo Tables", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 2, "threads_per_worker": 2, "memory_limit": "1GiB", "processes": True}))
 def subflow_extract_load_cameo_tables():
-    extract_load_cameo_type.submit()
-    extract_load_cameo_religion.submit()
-    extract_load_cameo_knowngroup.submit()
-    extract_load_cameo_goldsteinscale.submit()
-    extract_load_cameo_eventcodes.submit()
-    extract_load_cameo_ethnic.submit()
-    extract_load_cameo_country.submit()
-    extract_load_cameo_fipscountry.submit()
+    extract_load_cameo_type()
+    extract_load_cameo_religion()
+    extract_load_cameo_knowngroup()
+    extract_load_cameo_goldsteinscale()
+    extract_load_cameo_eventcodes()
+    extract_load_cameo_ethnic()
+    extract_load_cameo_country()
+    extract_load_cameo_fipscountry()
 
 # 4gb Memory Usage - workers-6 - th-2 
-@flow(name="GDELT ELT - Extract and Load Data Lake Sub Workflow", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 4, "threads_per_worker": 2, "memory_limit": "2GiB", "processes": True}))
+@flow(name="GDELT ELT - Extract and Load Data Lake Sub Workflow", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 2, "threads_per_worker": 2, "memory_limit": "2GiB", "processes": True}))
 def subflow_to_load_csv_to_datalake(csv_full_list, csv_extractor_function, transform_function, table_name):
     print(f"Extracting and Loading all CSV files For {table_name}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
