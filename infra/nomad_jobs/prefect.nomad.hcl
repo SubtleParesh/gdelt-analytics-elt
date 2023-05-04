@@ -123,7 +123,7 @@ job "prefect" {
           "default"
         ]
         privileged = true
-        memory_hard_limit = 6000
+        memory_hard_limit = 5500
         volume_driver = "local"
         volumes = [
           "/var/run/docker.sock:/var/run/docker.sock",
@@ -132,9 +132,10 @@ job "prefect" {
 
       template {
           data = <<EOF
-              PREFECT_API_URL= {{ env "NOMAD_IP_prefect_api" }}/api
+              PREFECT_API_URL= http://{{ env "NOMAD_IP_prefect_api" }}:4200/api
               PREFECT_LOGGING_LEVEL= DEBUG
               DOCKER_HOST= unix://var/run/docker.sock
+              EXTRA_PIP_PACKAGES="pandas clickhouse_connect minio prefect_dask requests dbt-core prefect-dbt[cli]"
         EOF
 
           destination = "local/environment.env"
