@@ -36,8 +36,6 @@ job "clickhouse" {
 
       template {
           data = <<EOF
-              # Lines starting with a # are ignored
-              # Empty lines are also ignored Change 2
               CLICKHOUSE_USER="clickhouse"
               CLICKHOUSE_PASSWORD="clickhouse"
               CLICKHOUSE_DATABASE="default"

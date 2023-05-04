@@ -40,8 +40,6 @@ job "minio" {
 
      template {
         data = <<EOF
-        # Lines starting with a # are ignored
-        # Empty lines are also ignored hange 2
         MINIO_ROOT_USER=admin
         MINIO_ROOT_PASSWORD=admin_password
         MINIO_VOLUMES=/mnt/data
