@@ -17,8 +17,14 @@
 
 ## Dashboard Links
 https://metabase.kritrim.space/public/dashboard/3fa3c05d-d3e5-4547-9f25-c4910d211e52?month_and_year=2023-01
+![Dashboard 1 - 1](./screenshots/Dashboard%201%20-%201.png)
+![Dashboard 1 - 2](./screenshots/Dashboard%201%20-%202.png)
+![Dashboard 2](./screenshots/Dashboard%202.png)
+
+
 
 https://metabase.kritrim.space/public/dashboard/608cfec5-16ba-4058-84f0-d756e839e502
+
 
 
 ## Data Visualizations - Metabase
