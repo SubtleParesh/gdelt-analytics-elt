@@ -154,6 +154,18 @@ resource "azurerm_network_security_group" "lighthouse" {
   }
 
   security_rule {
+    name                       = "metabase"
+    priority                   = 410
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "3000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
     name                       = "ping"
     priority                   = 440
     direction                  = "Inbound"
