@@ -179,7 +179,7 @@ def subflow_extract_load_cameo_tables():
     extract_load_cameo_fipscountry.submit()
 
 # 4gb Memory Usage - workers-6 - th-2 
-@flow(name="GDELT ELT - Extract and Load Data Lake Sub Workflow", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 10, "threads_per_worker": 2, "memory_limit": "1.3GiB", "processes": True}))
+@flow(name="GDELT ELT - Extract and Load Data Lake Sub Workflow", task_runner=DaskTaskRunner(cluster_kwargs={"n_workers": 4, "threads_per_worker": 2, "memory_limit": "2GiB", "processes": True}))
 def subflow_to_load_csv_to_datalake(csv_full_list, csv_extractor_function, transform_function, table_name):
     print(f"Extracting and Loading all CSV files For {table_name}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")

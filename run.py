@@ -1,3 +1,6 @@
+from prefect.deployments import Deployment, run_deployment
+
+
 if __name__ == "__main__":
     run_deployment(
         name="GDELT ELT Main Pipeline/master_flow_gdelt",
