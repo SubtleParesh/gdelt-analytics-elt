@@ -111,10 +111,13 @@ sudo systemctl start traefik
 nomad job run /home/ubuntu/nomad_jobs/clickhouse.nomad.hcl
 
 mkdir /home/nomad/job-volumes/metabase-plugins
-curl -o /home/nomad/job-volumes/metabase-plugins/clickhouse_plugin.jar https://github.com/ClickHouse/metabase-clickhouse-driver/releases/download/1.1.3/clickhouse.metabase-driver.jar
-chmod -R 777 /home/nomad/job-volumes/metabase-plugins
-nomad job run /home/ubuntu/nomad_jobs/metabase.nomad.hcl
-nomad job run /home/ubuntu/nomad_jobs/minio.nomad.hcl
-nomad job run /home/ubuntu/nomad_jobs/prefect.nomad.hcl
 
+nomad job run /home/ubuntu/nomad_jobs/minio.nomad.hcl
+
+cd /home/nomad/job-volumes/metabase-plugins/
+wget https://github.com/ClickHouse/metabase-clickhouse-driver/releases/download/1.1.3/clickhouse.metabase-driver.jar
+sudo chmod -R a+rwx  /home/nomad/job-volumes/metabase-plugins
+nomad job run /home/ubuntu/nomad_jobs/metabase.nomad.hcl
+
+nomad job run /home/ubuntu/nomad_jobs/prefect.nomad.hcl
 echo "Cloud Init Completed"
