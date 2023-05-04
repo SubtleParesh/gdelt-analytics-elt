@@ -6,7 +6,7 @@ dbt_transformations:
       schema: gdelt
       # Needs to be updated based upon deployment
       # host: gdelt-analytics.centralindia.cloudapp.azure.com
-      host: 20.204.13.134
+      host: 10.49.0.2
       port: 38123
       user: clickhouse
       password: 'clickhouse'

@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     # Change this value based upon your bandwidth and time. 
     # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
-    min_date = "1/05/2023"
+    min_date = "1/01/2020"
 
     main_flow(
         master_csv_list_url=master_csv_list_url,
