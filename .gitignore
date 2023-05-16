@@ -173,3 +173,4 @@ infra/terraform.tfstate
 infra/terraform.tfstate.backup
 id_rsa
 id_rsa.pub
+outputs/*
