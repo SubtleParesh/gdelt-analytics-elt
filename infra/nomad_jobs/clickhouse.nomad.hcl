@@ -43,8 +43,7 @@ job "clickhouse" {
 
           destination = "secrets/environment.env"
           env         = true
-        }    
+        }
     }
   }
 }
-

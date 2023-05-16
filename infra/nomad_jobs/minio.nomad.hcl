@@ -4,7 +4,7 @@ job "minio" {
   type        = "service"
 
   group "minio" {
-    
+
     network {
       port "http" {
         static = 39090
@@ -51,6 +51,3 @@ job "minio" {
     }
   }
 }
-
-
-

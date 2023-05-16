@@ -56,8 +56,7 @@ job "metabase" {
 
           destination = "secrets/environment.env"
           env         = true
-        }    
+        }
     }
   }
 }
-

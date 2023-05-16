@@ -71,7 +71,7 @@ job "prefect" {
 
           destination = "local/environment.env"
           env         = true
-        }    
+        }
     }
 
 
@@ -102,7 +102,7 @@ job "prefect" {
 
           destination = "secrets/environment.env"
           env         = true
-        }    
+        }
     }
 
     task "prefect-agent" {
@@ -140,8 +140,7 @@ job "prefect" {
 
           destination = "local/environment.env"
           env         = true
-        }    
+        }
     }
   }
 }
-

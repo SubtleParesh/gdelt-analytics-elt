@@ -10,10 +10,22 @@ variable "instance_size" {
     default = "Standard_B2s"
 }
 
-variable "instance_name" {
+variable "instance_big_size" {
     description = "Instance Size of azure vm"
     type = string
-    default = "lighthouse-instance"
+    default = "Standard_B4ms" //Standard_D4plds_v5
+}
+
+variable "master_vm" {
+    description = "Instance Size of azure vm"
+    type = string
+    default = "master-vm"
+}
+
+variable "node_vm" {
+    description = "Instance Size of azure vm"
+    type = string
+    default = "node-vm"
 }
 
 variable "resource_group_name" {
