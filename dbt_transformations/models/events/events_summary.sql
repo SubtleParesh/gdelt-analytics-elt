@@ -1,9 +1,9 @@
-{{ config(materialized='view') }}
+{{ config(order_by='(RecordDate)', engine='MergeTree()', materialized='table') }}
 
 
 with events_summary as (
     SELECT Id,
-        RecordDate 
+        RecordDate,
         IsRootEvent,
         EventCode,
         EventBaseCode,

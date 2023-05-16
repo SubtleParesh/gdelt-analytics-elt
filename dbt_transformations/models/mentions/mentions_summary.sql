@@ -2,8 +2,8 @@
 
 
 with mentions_summary as (
-    SELECT Id, 
-        RecordDate, 
+    SELECT Id,
+        RecordDate,
         MentionType,
         Confidence
     FROM (

@@ -1,4 +1,4 @@
-{{ config(order_by='(RecordDate)', materialized='view') }}
+{{ config(order_by='(RecordDate)', engine='MergeTree()', materialized='table') }}
 
 
 with events_geography as (
