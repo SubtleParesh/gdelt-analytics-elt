@@ -174,3 +174,4 @@ infra/terraform.tfstate.backup
 id_rsa
 id_rsa.pub
 outputs/*
+.docker-data/volumes/prefect/memo_store.toml

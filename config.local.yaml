@@ -1,0 +1,17 @@
+config:
+  ip_address: 10.49.0.2
+  dask:
+    n_workers: 4
+    threads_per_worker: 1
+    memory_limit: "2.5GiB"
+    processes: true
+  clickhouse:
+    username: admin
+    password: password
+    ip_address: 10.49.0.2
+    port: 38123
+  minio:
+    username: admin
+    password: password
+    ip_address: 10.49.0.2
+    port: 39191
