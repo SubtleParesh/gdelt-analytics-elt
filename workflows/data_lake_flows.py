@@ -14,8 +14,7 @@ table = Table()
 
 
 def create_bucket(config: Configuration):
-    print("create bucktet")
-    print(config)
+    print("Create Bucket")
     client = Minio(
         f"{config.minio.ip_address}:{config.minio.port}",
         access_key=config.minio.username,
@@ -228,7 +227,6 @@ def subflow_to_load_csv_to_datalake(
 ):
     print(f"Extracting and Loading all CSV files For {table_name}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
-    print(common.config.dask)
     for date, grouped_csv_list in csv_list_grouped_by_date:
         load_csvs_by_data_to_minio.submit(
             config,

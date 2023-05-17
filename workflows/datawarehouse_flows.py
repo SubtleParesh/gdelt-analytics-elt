@@ -35,7 +35,6 @@ def insert_data_cameo_tables_from_s3(
 ):
     clickhouse_client = get_clickhouse_client(config)
     insert_script = f"""INSERT INTO gdelt.{table_name} SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/cameo/{cameo_name}/data.parquet','{config.minio.username}','{config.minio.password}')"""
-    print(insert_script)
     clickhouse_client.command(insert_script)
 
 
@@ -48,7 +47,6 @@ def populate_event_data_from_s3(config: Configuration):
             if month < 10:
                 month_str = "0" + month_str
             insert_script = f"""INSERT INTO gdelt.events SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/events/{year}-{month_str}*.parquet','{config.minio.username}','{config.minio.password}')"""
-            print(insert_script)
             try:
                 clickhouse_client.command(insert_script)
             except clickhouse_connect.driver.exceptions.DatabaseError:
@@ -64,7 +62,6 @@ def populate_mentions_data_from_s3(config: Configuration):
             if month < 10:
                 month_str = "0" + month_str
             insert_script = f"""INSERT INTO gdelt.mentions SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/mentions/{year}-{month_str}*.parquet','{config.minio.username}','{config.minio.password}')"""
-            print(insert_script)
             try:
                 clickhouse_client.command(insert_script)
             except clickhouse_connect.driver.exceptions.DatabaseError:
