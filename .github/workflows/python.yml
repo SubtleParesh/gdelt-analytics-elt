@@ -17,44 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pylint
+          pip install -r requirements.txt
       - uses: pre-commit/action@v3.0.0
       - uses: pre-commit-ci/lite-action@v1.0.1
-        if: always()
-    #- name: Analysing the code with pylint
-    #  run: |
-    #    pylint $(git ls-files '*.py')
-    #- name: Python Actions Collection
-    #  uses: microsoft/action-python@0.6.3
-    #  with:
-    #    # Project root directory. Default '.'
-#
-#    root: . # optional, default is .
-#    # pyproject.toml location. Default pyproject.toml
-#
-#    toml: pyproject.toml # optional, default is pyproject.toml
-#    # Python Version Default is '3.7'.
-#
-#    python_version: 3.10 # optional, default is 3.7
-#    # Run Black Default is false.
-#
-#    black: true # optional
-#    # Run Bandit Default is false.
-#
-#    bandit: false # optional
-#    # Run Pylint Default is false.
-#
-#    pylint: true # optional
-#    # Run Pyright Default is false.
-#
-#    pyright: false # optional
-#    # Run Flake8 Default is false.
-#
-#    flake8: false # optional
-#    # Run tests with PyTest Default is false.
-#
-#    pytest: false # optional
-#    # Publish to PyPi Default is false
-#
-#    pypi_publish: false # optional
-#    # Customize which tests run with Pytest Markers
+        #if: always()
