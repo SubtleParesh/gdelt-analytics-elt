@@ -29,9 +29,8 @@ def create_bucket(config: Configuration):
 
 
 def get_minio_client(config: Configuration):
-    print(f"{config.ip_address}:{config.minio.port}")
     client = Minio(
-        f"{config.ip_address}:{config.minio.port}",
+        f"{config.minio.ip_address}:{config.minio.port}",
         access_key=config.minio.username,
         secret_key=config.minio.password,
         secure=False,
@@ -97,7 +96,7 @@ def load_csvs_by_data_to_minio(
 def load_to_minio(config: Configuration, df: pd.DataFrame, path: str, filename: str):
     minio_client = get_minio_client(config)
     df_parquet_data_buffer = BytesIO()
-    df.to_parquet(df_parquet_data_buffer)
+    df.to_parquet(df_parquet_data_buffer, compression="brotli")
     df_parquet_data_buffer.seek(0)
     path = path.replace("gdelt_", "")
     path = path.replace("_", "/")

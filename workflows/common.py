@@ -55,6 +55,7 @@ class ServiceConfiguration:
     username: str = "admin"
     password: str = "password"
     ip_address: str = "127.0.0.1"
+    port: str = "8080"
 
 
 @dataclass
@@ -68,4 +69,3 @@ class Configuration:
 initialize(config_path="../")
 cfg = compose(config_name="config.local.yaml")
 config = Configuration(**cfg.config)
-print(config)

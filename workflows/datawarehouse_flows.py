@@ -46,7 +46,7 @@ def populate_event_data_from_s3(config: Configuration):
             month_str = str(month)
             if month < 10:
                 month_str = "0" + month_str
-            insert_script = f"""INSERT INTO gdelt.events SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/events/{year}-{month_str}*.parquet','{config.minio.username}','{config.minio.password}')"""
+            insert_script = f"""INSERT INTO gdelt.events SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/events/*','{config.minio.username}','{config.minio.password}', \'Parquet\')"""
             try:
                 clickhouse_client.command(insert_script)
             except clickhouse_connect.driver.exceptions.DatabaseError:
@@ -61,7 +61,7 @@ def populate_mentions_data_from_s3(config: Configuration):
             month_str = str(month)
             if month < 10:
                 month_str = "0" + month_str
-            insert_script = f"""INSERT INTO gdelt.mentions SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/mentions/{year}-{month_str}*.parquet','{config.minio.username}','{config.minio.password}')"""
+            insert_script = f"""INSERT INTO gdelt.mentions SELECT * FROM s3('http://{config.minio.ip_address}:{config.minio.port}/gdelt/mentions/*','{config.minio.username}','{config.minio.password}', \'Parquet\')"""
             try:
                 clickhouse_client.command(insert_script)
             except clickhouse_connect.driver.exceptions.DatabaseError:
@@ -93,8 +93,16 @@ def insert_data_for_cameo_tables_from_data_lake(config: Configuration):
 def create_tables(config: Configuration):
     table = Table()
     clickhouse_client = get_clickhouse_client(config)
-    clickhouse_client.command(table.create_gdelt_events_table())
-    clickhouse_client.command(table.create_gdelt_mentions_table())
+    clickhouse_client.command(
+        table.create_gdelt_events_table().replace(
+            "MergeTree()", GetS3EngineConfig(config, "gdelt/events/")
+        )
+    )
+    clickhouse_client.command(
+        table.create_gdelt_mentions_table().replace(
+            "MergeTree()", GetS3EngineConfig(config, "gdelt/mentions/")
+        )
+    )
     clickhouse_client.command(cameo_tables.create_cameo_type_script)
     clickhouse_client.command(cameo_tables.create_cameo_religion_script)
     clickhouse_client.command(cameo_tables.create_cameo_knowngroup_script)
@@ -103,6 +111,10 @@ def create_tables(config: Configuration):
     clickhouse_client.command(cameo_tables.create_cameo_ethnic_script)
     clickhouse_client.command(cameo_tables.create_cameo_country_script)
     clickhouse_client.command(cameo_tables.create_cameo_fipscountry_script)
+
+
+def GetS3EngineConfig(config: Configuration, path: str):
+    return f"S3('http://{config.minio.ip_address}:{config.minio.port}/{path}*', '{config.minio.username}', '{config.minio.password}', 'Parquet')"
 
 
 @task(log_prints=True, tags=["drop_table", "clickhouse"], retries=1)
@@ -133,5 +145,3 @@ def subflow_datawarehouse(configuration, clean_start=False):
         drop_tables(configuration)
     create_tables(configuration)
     insert_data_for_cameo_tables_from_data_lake(configuration)
-    populate_event_data_from_s3(configuration)
-    populate_mentions_data_from_s3(configuration)

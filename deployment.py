@@ -20,8 +20,9 @@ if __name__ == "__main__":
         entrypoint="main.py:main_flow",
         parameters={
             "master_csv_list_url": "http://data.gdeltproject.org/gdeltv2/lastupdate.txt",
-            "min_date": "25/04/2023",
+            "min_date": "1/04/2023",
             "clean_start": True,
         },
+        work_queue_name="node",
     )
     deployment_id = docker_deployment.apply()
