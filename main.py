@@ -64,7 +64,7 @@ def log_master_list_info(
     )
 
 
-@flow(name="GDELT ELT Main Pipeline")
+@flow(name="GDELT ELT Main Pipeline", log_prints=True)
 def main_flow(
     master_csv_list_url,
     min_date: str,
@@ -75,7 +75,7 @@ def main_flow(
     global config
     cfg = compose(config_name=config_file)
     config = Configuration(**cfg.config)
-
+    print(config)
     min_datetime = datetime.strptime(min_date, "%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
