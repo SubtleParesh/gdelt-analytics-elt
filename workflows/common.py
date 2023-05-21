@@ -67,5 +67,5 @@ class Configuration:
 
 
 initialize(config_path="../")
-cfg = compose(config_name="config.local.yaml")
+cfg = compose(config_name="config.server.yaml")
 config = Configuration(**cfg.config)
