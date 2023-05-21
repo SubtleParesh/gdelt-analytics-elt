@@ -175,3 +175,5 @@ id_rsa
 id_rsa.pub
 outputs/*
 .docker-data/volumes/prefect/memo_store.toml
+infra/plan.json
+infra/plan.out
