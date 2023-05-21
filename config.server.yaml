@@ -1,9 +1,9 @@
 config:
   ip_address: ${oc.env:IP_ADDRESS}
   dask:
-    n_workers: 4
-    threads_per_worker: 1
-    memory_limit: "3GiB"
+    n_workers: ${oc.env:NUM_WORKERS}
+    threads_per_worker: ${oc.env:NUM_THREADS}
+    memory_limit: "2GiB"
     processes: true
   clickhouse:
     username: ${oc.env:CLICKHOUSE_USERNAME}

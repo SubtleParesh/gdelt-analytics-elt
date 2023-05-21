@@ -38,8 +38,8 @@ job "prefect" {
       driver = "docker"
 
       resources {
-        cpu    = 100
-        memory = 200
+        cpu    = 250
+        memory = 400
       }
 
       config {
@@ -79,8 +79,8 @@ job "prefect" {
       driver = "docker"
 
       resources {
-        cpu    = 100
-        memory = 200
+        cpu    = 200
+        memory = 300
       }
 
       config {
@@ -109,8 +109,8 @@ job "prefect" {
       driver = "docker"
 
       resources {
-        cpu    = 100
-        memory = 100
+        cpu    = 200
+        memory = 1000
       }
 
       config {
@@ -120,7 +120,9 @@ job "prefect" {
           "agent",
           "start",
           "-q",
-          "default"
+          "default",
+          "--limit"
+          "1"
         ]
         privileged = true
         memory_hard_limit = 5500
@@ -132,10 +134,22 @@ job "prefect" {
 
       template {
           data = <<EOF
-              PREFECT_API_URL= http://{{ env "NOMAD_IP_prefect_api" }}:4200/api
+              PREFECT_API_URL= http://10.0.2.5:4200/api
               PREFECT_LOGGING_LEVEL= DEBUG
               DOCKER_HOST= unix://var/run/docker.sock
-              EXTRA_PIP_PACKAGES="pandas clickhouse-connect==0.5.18 clickhouse-driver==0.2.5 minio prefect_dask requests dbt-core==1.4.5 pyarrow fastparquet dbt-clickhouse==1.4.0 dbt-extractor==0.4.1 prefect-sqlalchemy dask[dataframe] prefect-dbt[cli] prefect-dbt prefect-shell prefect-sqlalchemy==0.2.2"
+              EXTRA_PIP_PACKAGES="pandas clickhouse-connect==0.5.18 clickhouse-driver==0.2.5 minio prefect_dask requests dbt-core==1.4.5 pyarrow fastparquet dbt-clickhouse==1.4.0 dbt-extractor==0.4.1 prefect-sqlalchemy dask[dataframe] prefect-dbt[cli] prefect-dbt prefect-shell prefect-sqlalchemy==0.2.2 hydra-core aiohttp requests"
+              # Following Secrets/Configs can be overridden
+              CLICKHOUSE_USERNAME=admin
+              CLICKHOUSE_PASSWORD=password
+              CLICKHOUSE_IP_ADDRESS=10.0.2.5
+              CLICKHOUSE_PORT=38123
+              MINIO_USERNAME=admin
+              MINIO_PASSWORD=password
+              MINIO_IP_ADDRESS=10.0.2.5
+              MINIO_PORT=39191
+              IP_ADDRESS=10.0.2.5
+              NUM_WORKERS=1
+              NUM_THREADS=1
         EOF
 
           destination = "local/environment.env"
