@@ -76,6 +76,7 @@ def main_flow(
     cfg = compose(config_name=config_file)
     config = Configuration(**cfg.config)
     print(dict(config.dask))
+    print(config.dask)
     min_datetime = datetime.strptime(min_date, "%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
