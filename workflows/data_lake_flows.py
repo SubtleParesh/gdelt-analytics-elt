@@ -3,7 +3,7 @@ from io import BytesIO
 import dask.dataframe as dd
 import pandas as pd
 from minio import Minio
-from prefect import flow, task
+from prefect import flow, get_run_logger, task
 from prefect_dask.task_runners import DaskTaskRunner
 
 import workflows.common as common
@@ -205,6 +205,7 @@ def extract_load_cameo_fipscountry(config: Configuration):
 @flow(
     name="Subflow - Extract And Load Cameo Tables",
     task_runner=DaskTaskRunner(cluster_kwargs=common.config.dask),
+    log_prints=True,
 )
 def subflow_extract_load_cameo_tables(config):
     extract_load_cameo_type(config)
@@ -220,12 +221,15 @@ def subflow_extract_load_cameo_tables(config):
 @flow(
     name="GDELT ELT - Extract and Load Data Lake Sub Workflow",
     task_runner=DaskTaskRunner(cluster_kwargs=common.config.dask),
+    log_prints=True,
 )
 def subflow_to_load_csv_to_datalake(
     config, csv_full_list, csv_extractor_function, transform_function, table_name
 ):
     print(f"Extracting and Loading all CSV files For {table_name}")
-    print(common.config)
+    logger = get_run_logger()
+    logger.info(f"Extracting and Loading all CSV files For {table_name}")
+    logger.info(f"{common.config}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
     for date, grouped_csv_list in csv_list_grouped_by_date:
         load_csvs_by_data_to_minio.submit(
