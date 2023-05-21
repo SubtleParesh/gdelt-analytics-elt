@@ -6,7 +6,7 @@ from prefect_dbt.cli.configs import TargetConfigs
 import workflows.common as common
 
 
-@flow(name="GDELT ELT - DBT Tranformation Sub Workflow")
+@flow(name="GDELT ELT - DBT Tranformation Sub Workflow", log_prints=True)
 def trigger_dbt_flow():
     target_configs_extras = dict(
         host=common.config.clickhouse.ip_address,
@@ -24,6 +24,7 @@ def trigger_dbt_flow():
         target_configs=target_configs,
     )
     dbt_cli_profile.get_profile()
+    print(dbt_cli_profile.get_profile())
     DbtCoreOperation(
         commands=["ls &&", "dbt debug", "dbt run"],
         project_dir="dbt_transformations",

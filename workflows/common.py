@@ -2,7 +2,7 @@ import warnings
 from dataclasses import dataclass, field
 from enum import Enum
 
-from hydra import compose, initialize
+from hydra import initialize
 
 warnings.simplefilter(action="ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -75,5 +75,4 @@ class Configuration:
 
 
 initialize(config_path="../")
-cfg = compose(config_name="config.server.yaml")
-config = Configuration(**cfg.config)
+config: Configuration
