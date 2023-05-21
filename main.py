@@ -105,7 +105,7 @@ def main_flow(
         Table.mentions,
     )
     subflow_datawarehouse(config, clean_start)
-    trigger_dbt_flow()
+    trigger_dbt_flow(config)
 
 
 if __name__ == "__main__":
