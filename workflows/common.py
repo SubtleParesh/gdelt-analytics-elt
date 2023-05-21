@@ -51,6 +51,14 @@ class Table:
 
 
 @dataclass
+class DaskConfiguration:
+    n_workers: int = 1
+    threads_per_worker: int = 1
+    memory_limit: str = "2GiB"
+    processes: bool = True
+
+
+@dataclass
 class ServiceConfiguration:
     username: str = "admin"
     password: str = "password"
@@ -61,7 +69,7 @@ class ServiceConfiguration:
 @dataclass
 class Configuration:
     ip_address: str
-    dask: dict
+    dask: DaskConfiguration
     clickhouse: ServiceConfiguration = field(default_factory=ServiceConfiguration)
     minio: ServiceConfiguration = field(default_factory=ServiceConfiguration)
 
