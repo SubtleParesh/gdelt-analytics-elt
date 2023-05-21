@@ -204,7 +204,14 @@ def extract_load_cameo_fipscountry(config: Configuration):
 
 @flow(
     name="Subflow - Extract And Load Cameo Tables",
-    task_runner=DaskTaskRunner(cluster_kwargs=common.config.dask),
+    task_runner=DaskTaskRunner(
+        cluster_kwargs={
+            "n_workers": int(common.config.dask.n_workers),
+            "threads_per_worker": int(common.config.dask.threads_per_worker),
+            "memory_limit": common.config.dask.memory_limit,
+            "processes": common.config.dask.processes,
+        }
+    ),
     log_prints=True,
 )
 def subflow_extract_load_cameo_tables(config):
@@ -222,7 +229,14 @@ def subflow_extract_load_cameo_tables(config):
 
 @flow(
     name="GDELT ELT - Extract and Load Data Lake Sub Workflow",
-    task_runner=DaskTaskRunner(cluster_kwargs=common.config.dask),
+    task_runner=DaskTaskRunner(
+        cluster_kwargs={
+            "n_workers": int(common.config.dask.n_workers),
+            "threads_per_worker": int(common.config.dask.threads_per_worker),
+            "memory_limit": common.config.dask.memory_limit,
+            "processes": common.config.dask.processes,
+        }
+    ),
     log_prints=True,
 )
 def subflow_to_load_csv_to_datalake(
