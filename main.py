@@ -72,7 +72,7 @@ def main_flow(
     clean_start=False,
     max_datetime=None,
 ):
-    config: Configuration
+    global config
     cfg = compose(config_name=config_file)
     config = Configuration(**cfg.config)
 

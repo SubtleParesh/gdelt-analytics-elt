@@ -225,6 +225,7 @@ def subflow_to_load_csv_to_datalake(
     config, csv_full_list, csv_extractor_function, transform_function, table_name
 ):
     print(f"Extracting and Loading all CSV files For {table_name}")
+    print(common.config)
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
     for date, grouped_csv_list in csv_list_grouped_by_date:
         load_csvs_by_data_to_minio.submit(

@@ -121,7 +121,7 @@ job "prefect" {
           "start",
           "-q",
           "default",
-          "--limit"
+          "--limit",
           "1"
         ]
         privileged = true
