@@ -3,11 +3,9 @@ from prefect_dbt.cli import DbtCliProfile
 from prefect_dbt.cli.commands import DbtCoreOperation
 from prefect_dbt.cli.configs import TargetConfigs
 
-from workflows.common import Configuration
-
 
 @flow(name="GDELT ELT - DBT Tranformation Sub Workflow", log_prints=True)
-def trigger_dbt_flow(config: Configuration):
+def trigger_dbt_flow(config):
     target_configs_extras = dict(
         host=config.clickhouse.ip_address,
         user=config.clickhouse.username,
