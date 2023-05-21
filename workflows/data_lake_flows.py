@@ -208,6 +208,8 @@ def extract_load_cameo_fipscountry(config: Configuration):
     log_prints=True,
 )
 def subflow_extract_load_cameo_tables(config):
+    logger = get_run_logger()
+    logger.info(f"{common.config}")
     extract_load_cameo_type(config)
     extract_load_cameo_religion(config)
     extract_load_cameo_knowngroup(config)
