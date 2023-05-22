@@ -1,3 +1,4 @@
+import os
 import warnings
 from dataclasses import dataclass, field
 from enum import Enum
@@ -75,5 +76,10 @@ class Configuration:
 
 
 initialize(config_path="../")
-cfg = compose(config_name="config.local.yaml")
-config = Configuration(**cfg.config)
+config: Configuration
+if os.getenv("ENV") == "prod":
+    cfg = compose(config_name="config.server.yaml")
+    config = Configuration(**cfg.config)
+else:
+    cfg = compose(config_name="config.local.yaml")
+    config = Configuration(**cfg.config)
