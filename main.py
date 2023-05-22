@@ -4,6 +4,7 @@ import pandas as pd
 from hydra import compose
 from prefect import flow, get_run_logger, task
 
+import workflows.common as common
 from workflows.common import Configuration, Table
 from workflows.data_lake_flows import (
     create_bucket,
@@ -75,8 +76,9 @@ def main_flow(
     global config
     cfg = compose(config_name=config_file)
     config = Configuration(**cfg.config)
+    common.config = config
     print(dict(config.dask))
-    print(config.dask)
+    print(dict(common.config.dask))
     min_datetime = datetime.strptime(min_date, "%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
@@ -114,7 +116,7 @@ if __name__ == "__main__":
 
     # Change this value based upon your bandwidth and time.
     # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
-    min_date = "1/5/2023"
+    min_date = "1/3/2023"
     config_file = "config.local.yaml"
 
     main_flow(
