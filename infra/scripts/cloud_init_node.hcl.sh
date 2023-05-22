@@ -75,4 +75,5 @@ sudo systemctl start nomad
 
 sleep 60
 
+sudo shutdown
 echo "Cloud Init Completed"
