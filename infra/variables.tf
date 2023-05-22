@@ -1,37 +1,37 @@
 variable "instance_root_username" {
-    description = "Instance Root Username"
-    type = string
-    default = "ubuntu"
+  description = "Instance Root Username"
+  type        = string
+  default     = "ubuntu"
 }
 
 variable "instance_size" {
-    description = "Instance Size of azure vm"
-    type = string
-    default = "Standard_B2s"
+  description = "Instance Size of azure vm"
+  type        = string
+  default     = "Standard_B2s"
 }
 
 variable "instance_big_size" {
-    description = "Instance Size of azure vm"
-    type = string
-    default = "Standard_B4ms" //Standard_D4plds_v5
+  description = "Instance Size of azure vm"
+  type        = string
+  default     = "Standard_B4ms" //Standard_D4plds_v5
 }
 
 variable "master_vm" {
-    description = "Instance Size of azure vm"
-    type = string
-    default = "master-vm"
+  description = "Instance Size of azure vm"
+  type        = string
+  default     = "master-vm"
 }
 
 variable "node_vm" {
-    description = "Instance Size of azure vm"
-    type = string
-    default = "node-vm"
+  description = "Instance Size of azure vm"
+  type        = string
+  default     = "node-vm"
 }
 
 variable "resource_group_name" {
-    description = "Instance Size of azure vm"
-    type = string
-    default = "lighthouse-resources"
+  description = "Instance Size of azure vm"
+  type        = string
+  default     = "lighthouse-resources"
 }
 
 variable "consul_version" {
@@ -65,7 +65,7 @@ variable "environment" {
 variable "azure_creds" {
   type = object({
     subscription_id = string
-    tenant_id = string
+    tenant_id       = string
   })
   sensitive = true
 }

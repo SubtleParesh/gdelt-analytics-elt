@@ -11,8 +11,8 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "${var.azure_creds.subscription_id}"
-  tenant_id       = "${var.azure_creds.tenant_id}"
+  subscription_id            = var.azure_creds.subscription_id
+  tenant_id                  = var.azure_creds.tenant_id
   skip_provider_registration = true
 }
 
@@ -40,7 +40,7 @@ resource "azurerm_public_ip" "master" {
   resource_group_name = azurerm_resource_group.master.name
   location            = azurerm_resource_group.master.location
   allocation_method   = "Static"
-  domain_name_label = "gdelt-analytics"
+  domain_name_label   = "gdelt-analytics"
 
   tags = {
     environment = "Production"
@@ -255,7 +255,7 @@ resource "azurerm_linux_virtual_machine" "master" {
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS" // StandardSSD_LRS, Standard_LRS
-    disk_size_gb = "124"
+    disk_size_gb         = "124"
   }
 
   source_image_reference {
@@ -267,7 +267,7 @@ resource "azurerm_linux_virtual_machine" "master" {
 
   connection {
     type        = "ssh"
-    user        =  var.instance_root_username
+    user        = var.instance_root_username
     host        = azurerm_public_ip.master.ip_address
     private_key = tls_private_key.ssh.private_key_pem
   }
@@ -278,9 +278,9 @@ resource "azurerm_linux_virtual_machine" "master" {
   }
 
   provisioner "file" {
-      source      = "${path.module}/nomad_jobs"
-      destination = "/home/${var.instance_root_username}/"
-    }
+    source      = "${path.module}/nomad_jobs"
+    destination = "/home/${var.instance_root_username}/"
+  }
 
 
   provisioner "file" {
@@ -373,7 +373,7 @@ resource "azurerm_linux_virtual_machine" "node" {
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS" // StandardSSD_LRS, Standard_LRS
-    disk_size_gb = "30"
+    disk_size_gb         = "30"
   }
 
   source_image_reference {
@@ -385,9 +385,9 @@ resource "azurerm_linux_virtual_machine" "node" {
 
   connection {
     type        = "ssh"
-    user        =  var.instance_root_username
-    host        =  azurerm_public_ip.node.ip_address
-    private_key =  tls_private_key.ssh.private_key_pem
+    user        = var.instance_root_username
+    host        = azurerm_public_ip.node.ip_address
+    private_key = tls_private_key.ssh.private_key_pem
   }
 
   provisioner "file" {
@@ -396,9 +396,9 @@ resource "azurerm_linux_virtual_machine" "node" {
   }
 
   provisioner "file" {
-      source      = "${path.module}/nomad_jobs"
-      destination = "/home/${var.instance_root_username}/"
-    }
+    source      = "${path.module}/nomad_jobs"
+    destination = "/home/${var.instance_root_username}/"
+  }
 
 
   provisioner "file" {
