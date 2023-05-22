@@ -10,7 +10,7 @@ def trigger_dbt_flow(config):
         host=config.clickhouse.ip_address,
         user=config.clickhouse.username,
         password=config.clickhouse.password,
-        port=config.clickhouse.port,
+        port=int(config.clickhouse.port),
         secure=False,
     )
     target_configs = TargetConfigs(
