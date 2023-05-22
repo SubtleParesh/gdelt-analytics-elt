@@ -22,7 +22,6 @@ def trigger_dbt_flow(config):
         target_configs=target_configs,
     )
     dbt_cli_profile.get_profile()
-    print(dbt_cli_profile.get_profile())
     DbtCoreOperation(
         commands=["ls &&", "dbt debug", "dbt run"],
         project_dir="dbt_transformations",

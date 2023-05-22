@@ -38,7 +38,7 @@ def insert_data_cameo_tables_from_s3(
     clickhouse_client.command(insert_script)
 
 
-@task(log_prints=True, tags=["events", "populate"], retries=1)
+@task(log_prints=False, tags=["events", "populate"], retries=1)
 def populate_event_data_from_s3(config: Configuration):
     clickhouse_client = get_clickhouse_client(config)
     for year in range(2015, datetime.now().year + 1):
@@ -53,7 +53,7 @@ def populate_event_data_from_s3(config: Configuration):
                 print(f"Failed in {year}-{month_str}")
 
 
-@task(log_prints=True, tags=["mentions", "populate"], retries=1)
+@task(log_prints=False, tags=["mentions", "populate"], retries=1)
 def populate_mentions_data_from_s3(config: Configuration):
     clickhouse_client = get_clickhouse_client(config)
     for year in range(2015, datetime.now().year + 1):
@@ -68,7 +68,7 @@ def populate_mentions_data_from_s3(config: Configuration):
                 print(f"Failed in {year}-{month_str}")
 
 
-@task(log_prints=True, tags=["insert", "cameo", "clickhouse"], retries=2)
+@task(log_prints=False, tags=["insert", "cameo", "clickhouse"], retries=2)
 def insert_data_for_cameo_tables_from_data_lake(config: Configuration):
     table = Table()
     insert_data_cameo_tables_from_s3(table.cameo_type, "type", config=config)

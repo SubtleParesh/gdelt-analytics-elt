@@ -19,7 +19,7 @@ from workflows.datawarehouse_flows import subflow_datawarehouse
 from workflows.dbt_flow import trigger_dbt_flow
 
 
-@task(log_prints=True, tags=["load"], retries=3)
+@task(log_prints=False, tags=["load"], retries=3)
 def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
     df = pd.read_csv(
         list_file_url,
@@ -32,8 +32,6 @@ def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
     df["Date"] = df["DateTime"].dt.date
     df["Size"] = pd.to_numeric(df["Size"], errors="coerce").fillna(0)
     df = df.drop("DateTimeTemporary", axis=1)
-    print(df.head())
-    print(df.info())
     return df
 
 
@@ -78,7 +76,6 @@ def main_flow(
     config = Configuration(**cfg.config)
     common.config = config
     print(dict(config.dask))
-    print(dict(common.config.dask))
     min_datetime = datetime.strptime(min_date, "%d/%m/%Y")
     master_list = retrive_file_urls_from_csv(master_csv_list_url)
     master_list = master_list[master_list["DateTime"].dt.date >= min_datetime.date()]
