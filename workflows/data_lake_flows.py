@@ -258,4 +258,4 @@ def subflow_to_load_csv_to_datalake(
             csv_extractor_function,
             transform_function,
         )
-        time.sleep(2)
+        time.sleep(5)
