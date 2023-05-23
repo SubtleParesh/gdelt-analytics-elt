@@ -79,7 +79,7 @@ def extract_csv_batch(grouped_csv_list, csv_extractor_function):
     return csv_extractor_function(urls)
 
 
-@task(retries=2, retry_delay_seconds=1)
+@task(retries=3, retry_delay_seconds=10)
 def load_csvs_by_data_to_minio(
     config: Configuration,
     date,
