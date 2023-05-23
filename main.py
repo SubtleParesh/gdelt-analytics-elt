@@ -30,6 +30,7 @@ def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
     df["DateTimeTemporary"] = df["FileUrl"].str.extract(r"(\d{14})")
     df["DateTime"] = pd.to_datetime(df["DateTimeTemporary"], format="%Y%m%d%H%M%S")
     df["Date"] = df["DateTime"].dt.date
+    df["Year"] = pd.to_numeric(df["DateTime"].dt.year, downcast="integer")
     df["Size"] = pd.to_numeric(df["Size"], errors="coerce").fillna(0)
     df = df.drop("DateTimeTemporary", axis=1)
     return df
@@ -90,19 +91,34 @@ def main_flow(
     log_master_list_info(
         master_list_events, master_list_mentions, master_list_gkg, logger
     )
-    create_bucket(config)
 
+    create_bucket(config)
     subflow_extract_load_cameo_tables(config)
-    subflow_to_load_csv_to_datalake(
-        config, master_list_events, extract_events, transform_events, Table.events
-    )
-    subflow_to_load_csv_to_datalake(
-        config,
-        master_list_mentions,
-        extract_mentions,
-        transform_mentions,
-        Table.mentions,
-    )
+
+    # EVENTS
+    events_csv_list_grouped_by_year = master_list_events.groupby(by="Year")
+    for year, grouped_csv_list in events_csv_list_grouped_by_year:
+        print(f"Extract and Load for Events - Year -{year}")
+        subflow_to_load_csv_to_datalake(
+            config,
+            grouped_csv_list,
+            extract_events,
+            transform_events,
+            Table.events,
+        )
+
+    # MENTIONS
+    mentions_csv_list_grouped_by_year = master_list_mentions.groupby(by="Year")
+    for year, grouped_csv_list in mentions_csv_list_grouped_by_year:
+        print(f"Extract and Load for Mentions - Year -{year}")
+        subflow_to_load_csv_to_datalake(
+            config,
+            grouped_csv_list,
+            extract_mentions,
+            transform_mentions,
+            Table.mentions,
+        )
+
     subflow_datawarehouse(config, clean_start)
     trigger_dbt_flow(config)
 
@@ -113,7 +129,7 @@ if __name__ == "__main__":
 
     # Change this value based upon your bandwidth and time.
     # Prefer first run of year 2023 which should take around 15mins to 30mins based upon you bandwidth
-    min_date = "1/3/2023"
+    min_date = "1/5/2023"
     config_file = "config.local.yaml"
 
     main_flow(
