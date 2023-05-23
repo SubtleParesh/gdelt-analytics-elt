@@ -213,7 +213,7 @@ def extract_load_cameo_fipscountry(config: Configuration):
             "processes": common.config.dask.processes,
         }
     ),
-    log_prints=True,
+    log_prints=False,
 )
 def subflow_extract_load_cameo_tables(config):
     logger = get_run_logger()
@@ -238,15 +238,12 @@ def subflow_extract_load_cameo_tables(config):
             "processes": common.config.dask.processes,
         }
     ),
-    log_prints=True,
+    log_prints=False,
 )
 def subflow_to_load_csv_to_datalake(
     config, csv_full_list, csv_extractor_function, transform_function, table_name
 ):
     print(f"Extracting and Loading all CSV files For {table_name}")
-    logger = get_run_logger()
-    logger.info(f"Extracting and Loading all CSV files For {table_name}")
-    logger.info(f"{dict(common.config.dask)}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
 
     for date, grouped_csv_list in csv_list_grouped_by_date:
@@ -258,4 +255,4 @@ def subflow_to_load_csv_to_datalake(
             csv_extractor_function,
             transform_function,
         )
-        time.sleep(5)
+        time.sleep(10)
