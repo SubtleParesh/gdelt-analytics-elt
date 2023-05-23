@@ -1,3 +1,4 @@
+import time
 from io import BytesIO
 
 import dask.dataframe as dd
@@ -247,6 +248,7 @@ def subflow_to_load_csv_to_datalake(
     logger.info(f"Extracting and Loading all CSV files For {table_name}")
     logger.info(f"{dict(common.config.dask)}")
     csv_list_grouped_by_date = csv_full_list.groupby(by="Date")
+
     for date, grouped_csv_list in csv_list_grouped_by_date:
         load_csvs_by_data_to_minio.submit(
             config,
@@ -256,3 +258,4 @@ def subflow_to_load_csv_to_datalake(
             csv_extractor_function,
             transform_function,
         )
+        time.sleep(2)
