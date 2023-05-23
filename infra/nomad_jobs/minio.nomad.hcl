@@ -4,7 +4,7 @@ job "minio" {
   type        = "service"
 
   group "minio" {
-    
+
     network {
       port "http" {
         static = 39090
@@ -41,7 +41,7 @@ job "minio" {
      template {
         data = <<EOF
         MINIO_ROOT_USER=admin
-        MINIO_ROOT_PASSWORD=admin_password
+        MINIO_ROOT_PASSWORD=password
         MINIO_VOLUMES=/mnt/data
         EOF
 
@@ -51,6 +51,3 @@ job "minio" {
     }
   }
 }
-
-
-

@@ -1,44 +1,44 @@
 http:
   routers:
     traefik:
-      rule: "Host(`traefik.gdelt-analytics.centralindia.cloudapp.azure.com`)"
+      rule: "Host(`consul.your-domain.com`)"
       entryPoints:
-      - web
+        - web
       middlewares:
-      - default-auth
+        - default-auth
       service: traefik-service
     consul:
-      rule: "Host(`consul.gdelt-analytics.centralindia.cloudapp.azure.com`)"
+      rule: "Host(`consul.your-domain.com`)"
       entryPoints:
-      - web
+        - web
       middlewares:
-      - default-auth
+        - default-auth
       service: consul-service
     nomad:
-      rule: "Host(`nomad.gdelt-analytics.centralindia.cloudapp.azure.com`)"
+      rule: "Host(`consul.your-domain.com`)"
       entryPoints:
-      - web
+        - web
       middlewares:
-      - default-auth
+        - default-auth
       service: nomad-service
   # Add the service
   services:
     traefik-service:
       loadBalancer:
         servers:
-        - url: http://127.0.0.1:8080
+          - url: http://127.0.0.1:8080
     consul-service:
       loadBalancer:
         servers:
-        - url: http://127.0.0.1:8500
+          - url: http://127.0.0.1:8500
     consul-agent-service:
       loadBalancer:
         servers:
-        - url: http://127.0.0.1:9500
+          - url: http://127.0.0.1:9500
     nomad-service:
       loadBalancer:
         servers:
-        - url: http://127.0.0.1:4646
+          - url: http://127.0.0.1:4646
   middlewares:
     # Passwords must be hashed using MD5, SHA1, or BCrypt.
     # To create user:password pair, it's possible to use this command:
@@ -47,4 +47,3 @@ http:
       basicAuth:
         usersFile: "/home/ubuntu/cloudinit/users.secrets"
         removeHeader: true
-    

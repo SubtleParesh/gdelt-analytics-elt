@@ -4,7 +4,7 @@
   "log_level": "INFO",
   "node_name": "server",
   "server": true,
-  "bind_addr": "127.0.0.1",
+  "bind_addr": "10.0.2.5",
   "client_addr": "0.0.0.0",
   "bootstrap_expect": 1,
   "limits": {

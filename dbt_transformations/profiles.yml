@@ -1,13 +1,13 @@
+config: {}
 dbt_transformations:
-  target: dev
   outputs:
     dev:
-      type: clickhouse
-      schema: gdelt
-      # Needs to be updated based upon deployment
-      # host: gdelt-analytics.centralindia.cloudapp.azure.com
       host: 10.49.0.2
+      password: password
       port: 38123
-      user: clickhouse
-      password: 'clickhouse'
-      secure: False
+      schema: gdelt
+      secure: false
+      threads: 4
+      type: clickhouse
+      user: admin
+  target: dev

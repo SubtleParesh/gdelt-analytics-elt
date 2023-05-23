@@ -8,8 +8,8 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "local_sensitive_file" "private_key" {
-  content = tls_private_key.ssh.private_key_pem
-  filename          = "${var.creds_output_path}/id_rsa"
+  content  = tls_private_key.ssh.private_key_pem
+  filename = "${var.creds_output_path}/id_rsa"
 }
 
 resource "local_file" "public_key" {

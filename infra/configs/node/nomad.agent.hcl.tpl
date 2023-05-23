@@ -1,32 +1,33 @@
 data_dir = "/opt/nomad/data"
-bind_addr = "0.0.0.0"
+bind_addr = "10.0.2.6"
+datacenter = "node1"
+
 # Enable the server
 server {
-  enabled = true
+  enabled = false
   bootstrap_expect = 1
 }
+
 client {
-  enabled       = true
+  enabled = true
 }
 
 advertise {
-  http = "0.0.0.0"
-  rpc = "127.0.0.1"
-  serf = "127.0.0.1"
- }
- 
-
-consul {
-  address = "127.0.0.1:9500"
-  server_service_name = "nomad"
-  client_service_name = "nomad-client"
+  http = "10.0.2.6"
+  rpc = "10.0.2.6"
+  serf = "10.0.2.6"
 }
 
+consul {
+  address = "10.0.2.6:9500"
+  server_service_name = "nomad"
+  client_service_name = "nomad-node"
+}
 
 plugin "docker" {
   config {
     volumes {
-      enabled      = true
+      enabled = true
       selinuxlabel = "z"
     }
     allow_privileged = true

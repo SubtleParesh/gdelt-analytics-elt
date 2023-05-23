@@ -19,8 +19,8 @@ job "clickhouse" {
       driver = "docker"
 
       resources {
-        cpu    = 100
-        memory = 200
+        cpu    = 300
+        memory = 300
       }
 
       config {
@@ -36,15 +36,14 @@ job "clickhouse" {
 
       template {
           data = <<EOF
-              CLICKHOUSE_USER="clickhouse"
-              CLICKHOUSE_PASSWORD="clickhouse"
+              CLICKHOUSE_USER="admin"
+              CLICKHOUSE_PASSWORD="password"
               CLICKHOUSE_DATABASE="default"
         EOF
 
           destination = "secrets/environment.env"
           env         = true
-        }    
+        }
     }
   }
 }
-

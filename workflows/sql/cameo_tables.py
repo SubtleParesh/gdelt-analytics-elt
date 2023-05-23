@@ -1,4 +1,3 @@
-
 create_cameo_type_script = """
 CREATE TABLE IF NOT EXISTS cameo_type (
   Code String,
@@ -43,7 +42,6 @@ ORDER BY (CameoEventCode);
 """
 
 
-
 create_cameo_ethnic_script = """
 CREATE TABLE IF NOT EXISTS cameo_ethnic (
   Code String,
@@ -51,7 +49,6 @@ CREATE TABLE IF NOT EXISTS cameo_ethnic (
 ) ENGINE = MergeTree()
 ORDER BY (Code);
 """
-
 
 
 create_cameo_country_script = """

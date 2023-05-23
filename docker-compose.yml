@@ -13,8 +13,8 @@ services:
     volumes:
       - ./.docker-data/clickhouse:/var/lib/clickhouse
     environment:
-      - CLICKHOUSE_USER=clickhouse
-      - CLICKHOUSE_PASSWORD=clickhouse
+      - CLICKHOUSE_USER=admin
+      - CLICKHOUSE_PASSWORD=password
       - CLICKHOUSE_DATABASE=default
 
   # --------------------------------------#
@@ -29,26 +29,25 @@ services:
       - "3000:3000"
     volumes:
       - ./.docker-data/metabase-data-plugins:/plugins"
-    
-    
+
   # --------------------------------------#
   #               Minio                   #
   # --------------------------------------#
   minio:
     image: minio/minio:latest
     container_name: gdelt-analytics-etl-minio
-    
+
     command: server --console-address ":9090"
     ports:
       - "39090:9090"
       - "39191:9000"
     environment:
       - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=admin_password
+      - MINIO_ROOT_PASSWORD=password
       - MINIO_VOLUMES=/mnt/data
     volumes:
       - ./.docker-data/minio:/mnt/data"
-  
+
   # --------------------------------------#
   #               Postgres                #
   # --------------------------------------#
@@ -69,8 +68,8 @@ services:
       test: pg_isready -q -d $${POSTGRES_DB} -U $${POSTGRES_USER} | grep "accepting connections" || exit 1
       timeout: 2s
     ports:
-    - published: 5433
-      target: 5432
+      - published: 5433
+        target: 5432
     restart: on-failure
     volumes:
       - ./.docker-data/postgres:/var/lib/postgresql/data
@@ -88,7 +87,7 @@ services:
     ports:
       - 4200:4200
     depends_on:
-       postgres:
+      postgres:
         condition: service_started
     volumes:
       - ./.docker-data/volumes/prefect:/root/.prefect
@@ -102,7 +101,7 @@ services:
     networks:
       - prefect
   # --------------------------------------#
-  #             Docker Agent              #
+  #            Prefect Docker Agent              #
   # --------------------------------------#
   prefect-agent:
     image: prefecthq/prefect:2-python3.10

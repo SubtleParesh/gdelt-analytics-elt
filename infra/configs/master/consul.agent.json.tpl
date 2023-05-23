@@ -4,8 +4,8 @@
   "log_level": "INFO",
   "node_name": "server-agent",
   "server": false,
-  "retry_join": ["127.0.0.1:8301"],
-  "bind_addr": "127.0.0.1",
+  "retry_join": ["10.0.2.5:8301"],
+  "bind_addr": "10.0.2.5",
   "client_addr": "0.0.0.0",
   "ports": {
     "dns": 9600,

@@ -1,0 +1,17 @@
+config:
+  ip_address: ${oc.env:IP_ADDRESS}
+  dask:
+    n_workers: ${oc.env:NUM_WORKERS}
+    threads_per_worker: ${oc.env:NUM_THREADS}
+    memory_limit: "2GiB"
+    processes: true
+  clickhouse:
+    username: ${oc.env:CLICKHOUSE_USERNAME}
+    password: ${oc.env:CLICKHOUSE_PASSWORD}
+    ip_address: ${oc.env:CLICKHOUSE_IP_ADDRESS}
+    port: ${oc.env:CLICKHOUSE_PORT}
+  minio:
+    username: ${oc.env:MINIO_USERNAME}
+    password: ${oc.env:MINIO_PASSWORD}
+    ip_address: ${oc.env:MINIO_IP_ADDRESS}
+    port: ${oc.env:MINIO_PORT}
