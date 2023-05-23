@@ -25,13 +25,6 @@ job "prefect" {
         "traefik.http.routers.prefect.entrypoints=web,websecure",
         "traefik.http.routers.prefect.middlewares=default-auth@file",
       ]
-
-      check {
-        type     = "http"
-        path     = "/"
-        interval = "2s"
-        timeout  = "2s"
-      }
     }
 
     task "prefect" {
@@ -43,7 +36,7 @@ job "prefect" {
       }
 
       config {
-        image = "prefecthq/prefect:2-python3.10"
+        image = "prefecthq/prefect:2-python3.11"
         args = [
           "prefect",
           "server",
@@ -79,12 +72,12 @@ job "prefect" {
       driver = "docker"
 
       resources {
-        cpu    = 200
-        memory = 300
+        cpu    = 250
+        memory = 400
       }
 
       config {
-        image = "postgres:14"
+        image = "postgres:15.3"
         memory_hard_limit = 1500
         ports = ["prefect_db"]
         volume_driver = "local"
@@ -110,7 +103,7 @@ job "prefect" {
 
       resources {
         cpu    = 200
-        memory = 1000
+        memory = 500
       }
 
       config {
@@ -135,7 +128,7 @@ job "prefect" {
       template {
           data = <<EOF
               PREFECT_API_URL= http://10.0.2.5:4200/api
-              PREFECT_LOGGING_LEVEL= DEBUG
+              PREFECT_LOGGING_LEVEL=ERROR
               DOCKER_HOST=unix://var/run/docker.sock
               EXTRA_PIP_PACKAGES="pandas clickhouse-connect==0.5.18 clickhouse-driver==0.2.5 minio prefect_dask requests dbt-core==1.4.5 pyarrow fastparquet dbt-clickhouse==1.4.0 dbt-extractor==0.4.1 prefect-sqlalchemy dask[dataframe] prefect-dbt[cli] prefect-dbt prefect-shell prefect-sqlalchemy==0.2.2 hydra-core aiohttp requests"
               # Following Secrets/Configs can be overridden

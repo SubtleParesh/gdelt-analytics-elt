@@ -36,9 +36,9 @@ job "prefect-agent-worker" {
       template {
           data = <<EOF
               PREFECT_API_URL= http://10.0.2.5:4200/api
-              PREFECT_LOGGING_LEVEL= DEBUG
+              PREFECT_LOGGING_LEVEL=ERROR
               DOCKER_HOST=unix://var/run/docker.sock
-              EXTRA_PIP_PACKAGES="pandas clickhouse-connect==0.5.18 clickhouse-driver==0.2.5 minio prefect_dask==0.2.3 dask==2023.4.0 requests dbt-core==1.4.5 pyarrow fastparquet dbt-clickhouse==1.4.0 dbt-extractor==0.4.1 prefect-sqlalchemy dask[dataframe] prefect-dbt[cli] prefect-dbt prefect-shell prefect-sqlalchemy==0.2.2 hydra-core aiohttp requests"
+              EXTRA_PIP_PACKAGES="pandas clickhouse-connect==0.5.18 clickhouse-driver==0.2.5 minio==7.1.13 prefect_dask==0.2.3 dask==2023.4.0 requests dbt-core==1.4.5 pyarrow==10.0.1 dbt-clickhouse==1.4.0 dbt-extractor==0.4.1 dask[dataframe] prefect-dbt==0.3.1 prefect-shell prefect-sqlalchemy==0.2.2 hydra-core aiohttp requests"
               # Following Secrets/Configs can be overridden
               CLICKHOUSE_USERNAME=admin
               CLICKHOUSE_PASSWORD=password
@@ -49,8 +49,9 @@ job "prefect-agent-worker" {
               MINIO_IP_ADDRESS=10.0.2.5
               MINIO_PORT=39191
               IP_ADDRESS=10.0.2.5
-              NUM_WORKERS=4
+              NUM_WORKERS=8
               NUM_THREADS=1
+              ENV=prod
         EOF
 
           destination = "local/environment.env"
