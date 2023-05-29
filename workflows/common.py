@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 from hydra import compose, initialize
+from prefect_dask.task_runners import DaskTaskRunner
 
 warnings.simplefilter(action="ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -83,3 +84,12 @@ if os.getenv("ENV") == "prod":
 else:
     cfg = compose(config_name="config.local.yaml")
     config = Configuration(**cfg.config)
+
+dask_task_runner = DaskTaskRunner(
+    cluster_kwargs={
+        "n_workers": int(config.dask.n_workers),
+        "threads_per_worker": int(config.dask.threads_per_worker),
+        "memory_limit": config.dask.memory_limit,
+        "processes": config.dask.processes,
+    }
+)

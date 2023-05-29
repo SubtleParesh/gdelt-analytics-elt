@@ -7,7 +7,7 @@ if __name__ == "__main__":
     github_block_name = "gdelt-analytics-etl-github"
     github_url = "https://github.com/SubtleParesh/gdelt-analytics-etl.git"
 
-    github_storage_block = GitHub(repository=github_url, reference="main").save(
+    github_storage_block = GitHub(repository=github_url, reference="develop").save(
         github_block_name, overwrite=True
     )
 
@@ -17,7 +17,7 @@ if __name__ == "__main__":
         flow=main_flow,
         version="1.0.0",
         storage=github_storage,
-        entrypoint="main.py:main_flow",
+        entrypoint="./workflows/main_flow.py:main_flow",
         parameters={
             "master_csv_list_url": "http://data.gdeltproject.org/gdeltv2/lastupdate.txt",
             "min_date": "1/04/2023",

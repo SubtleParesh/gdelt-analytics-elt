@@ -1,4 +1,3 @@
-import time
 from io import BytesIO
 
 import dask.dataframe as dd
@@ -230,14 +229,7 @@ def subflow_extract_load_cameo_tables(config):
 
 @flow(
     name="GDELT ELT - Extract and Load Data Lake Sub Workflow",
-    task_runner=DaskTaskRunner(
-        cluster_kwargs={
-            "n_workers": int(common.config.dask.n_workers),
-            "threads_per_worker": int(common.config.dask.threads_per_worker),
-            "memory_limit": common.config.dask.memory_limit,
-            "processes": common.config.dask.processes,
-        }
-    ),
+    task_runner=common.dask_task_runner,
     log_prints=False,
 )
 def subflow_to_load_csv_to_datalake(
@@ -255,4 +247,3 @@ def subflow_to_load_csv_to_datalake(
             csv_extractor_function,
             transform_function,
         )
-        time.sleep(5)

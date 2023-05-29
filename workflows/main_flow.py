@@ -30,6 +30,7 @@ def retrive_file_urls_from_csv(list_file_url) -> pd.DataFrame:
     df["DateTimeTemporary"] = df["FileUrl"].str.extract(r"(\d{14})")
     df["DateTime"] = pd.to_datetime(df["DateTimeTemporary"], format="%Y%m%d%H%M%S")
     df["Date"] = df["DateTime"].dt.date
+    df["Month"] = df["DateTime"].dt.month
     df["Year"] = pd.to_numeric(df["DateTime"].dt.year, downcast="integer")
     df["Size"] = pd.to_numeric(df["Size"], errors="coerce").fillna(0)
     df = df.drop("DateTimeTemporary", axis=1)
@@ -97,15 +98,17 @@ def main_flow(
 
     # EVENTS
     events_csv_list_grouped_by_year = master_list_events.groupby(by="Year")
-    for year, grouped_csv_list in events_csv_list_grouped_by_year:
-        print(f"Extract and Load for Events - Year -{year}")
-        subflow_to_load_csv_to_datalake(
-            config,
-            grouped_csv_list[:],
-            extract_events,
-            transform_events,
-            Table.events,
-        )
+    for year, csv_list_for_year in events_csv_list_grouped_by_year:
+        events_csv_list_grouped_by_month = master_list_events.groupby(by="Month")
+        for month, grouped_by_month in events_csv_list_grouped_by_month:
+            print(f"Extract and Load for Events - Year -{year}")
+            subflow_to_load_csv_to_datalake(
+                config,
+                grouped_by_month,
+                extract_events,
+                transform_events,
+                Table.events,
+            )
 
     # MENTIONS
     mentions_csv_list_grouped_by_year = master_list_mentions.groupby(by="Year")
