@@ -7,7 +7,7 @@ dbt_transformations:
       port: 38123
       schema: gdelt
       secure: false
-      threads: 4
+      threads: 3
       type: clickhouse
       user: admin
   target: dev
